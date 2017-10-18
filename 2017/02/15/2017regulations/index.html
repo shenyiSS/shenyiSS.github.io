@@ -84,16 +84,28 @@
 
 
 
-<meta name="description" content="有时候会出现hexo server不能使用的情况，这是因为hexo3中server被分离出来，需要先sudo npm install hexo-server,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下">
+<meta name="description" content="有时候会出现hexo server不能使用的情况，这是因为hexo3中server被分离出来，需要先sudo npm install hexo-server,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下
+
+安装自动部署工具$ npm install hexo-deployer-git --save
+
+更改hexo服务器端口号$ hexo server -p 5000">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2017regulations">
+<meta property="og:title" content="hexo部署和更新博客">
 <meta property="og:url" content="http://littlesw.top/2017/02/15/2017regulations/index.html">
 <meta property="og:site_name" content="LittleStingWhen">
-<meta property="og:description" content="有时候会出现hexo server不能使用的情况，这是因为hexo3中server被分离出来，需要先sudo npm install hexo-server,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下">
-<meta property="og:updated_time" content="2017-10-18T15:05:26.000Z">
+<meta property="og:description" content="有时候会出现hexo server不能使用的情况，这是因为hexo3中server被分离出来，需要先sudo npm install hexo-server,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下
+
+安装自动部署工具$ npm install hexo-deployer-git --save
+
+更改hexo服务器端口号$ hexo server -p 5000">
+<meta property="og:updated_time" content="2017-10-18T15:27:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2017regulations">
-<meta name="twitter:description" content="有时候会出现hexo server不能使用的情况，这是因为hexo3中server被分离出来，需要先sudo npm install hexo-server,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下">
+<meta name="twitter:title" content="hexo部署和更新博客">
+<meta name="twitter:description" content="有时候会出现hexo server不能使用的情况，这是因为hexo3中server被分离出来，需要先sudo npm install hexo-server,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下
+
+安装自动部署工具$ npm install hexo-deployer-git --save
+
+更改hexo服务器端口号$ hexo server -p 5000">
 
 
 
@@ -127,7 +139,7 @@
 
 
 
-  <title> 2017regulations | LittleStingWhen </title>
+  <title> hexo部署和更新博客 | LittleStingWhen </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -274,7 +286,7 @@
             
             
               
-                2017regulations
+                hexo部署和更新博客
               
             
           </h1>
@@ -326,8 +338,37 @@
 
       
         <ol>
-<li>有时候会出现<code>hexo server</code>不能使用的情况，这是因为hexo3中server被分离出来，需要先<code>sudo npm install hexo-server</code>,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下</li>
-<li></li>
+<li><p>有时候会出现<code>hexo server</code>不能使用的情况，这是因为hexo3中server被分离出来，需要先<code>sudo npm install hexo-server</code>,或者检查一下server模块是不是安装在博客目录下，当前是不是在博客目录下</p>
+</li>
+<li><p>安装自动部署工具<code>$ npm install hexo-deployer-git --save</code></p>
+</li>
+<li><p>更改hexo服务器端口号<code>$ hexo server -p 5000</code>，从默认的4000更改到5000</p>
+</li>
+<li><p>修改主题方法是两步，先下载主题然后放到博客中的themes文件夹（专门用来存放主题）下，再修改主题的配置文件_config.yml中相关参数，启用themes文件夹下新增的主题,例如</p>
+<ol>
+<li><p>下载Next主题:</p>
+<p> 进入 hexoBlog/themes 文件夹中，打开Git Bash面板，输入：<br> <code>git clone https://github.com/iissnan/hexo-theme-next themes/next</code><br> 把主题包克隆到themes文件夹中即可。</p>
+</li>
+<li><p>启用主题:</p>
+<p> 与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开themes下的主题配置文件_config.yml， 找到 theme 字段，并将其值更改为 next（注意冒号后面要留一个 空格）。</p>
+</li>
+<li><p>验证主题:</p>
+<p> 清除并重新生成hexo静态文件，启动本地服务器，然后通过<a href="http://localhost:4000/预览博客：" target="_blank" rel="external">http://localhost:4000/预览博客：</a></p>
+<pre><code>hexo clean         #清除静态文件
+hexo g          #重新生成静态文件
+hexo s         #启动服务器
+</code></pre></li>
+</ol>
+</li>
+<li><p>每次更新博客</p>
+<ul>
+<li>书写博客md文件</li>
+<li>进入XXX.github.io文件夹，<code>hexo server</code>或者<code>hexo s</code>运行服务器，预览</li>
+<li>审核无误后运行<code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code>(清除文件，生成新文件，部署到github服务器) </li>
+</ul>
+</li>
+<li><p>更改地址到自定义域名，登录github，进入到博客仓库，点击setting，选择custom domain ，输入要自定义的域名，更改保存，每次<code>hexo d</code>之后都要进行这个操作</p>
+</li>
 </ol>
 
       
