@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS原生语音识别 | LittleStingWhen</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="LittleStingWhen">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">LittleStingWhen</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-02-08T11:28:56.000Z" itemprop="datePublished">
+          2018-02-08
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS原生语音识别</h1>
+    <section class="post-content">
+      <ol>
+<li>需要iOS10以上系统，需要在plist文件添加使用语音和麦克风的权限描述</li>
+<li><p>AR喵的实现</p>
+<ol>
+<li>用户按住按钮-&gt;说话，录音，生成文件保存(还是保存识别结果)?</li>
+<li>用户第二次按住-&gt;说话，录音，生成文件保存(还是保存识别结果)？-&gt;比对两次说话录音识别结果-&gt;一致则通过</li>
+<li>用户发起语音指令-&gt;按住说话-&gt; 识别-&gt;匹配-&gt;是否执行？</li>
+</ol>
+</li>
+<li><p>使用的是#import <speech speech.h=""></speech></p>
+</li>
+<li>识别本地语音文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:@&quot;zh_CN&quot;];</div><div class="line">    SFSpeechRecognizer *localRecognizer =[[SFSpeechRecognizer alloc] initWithLocale:local];</div><div class="line">    NSURL *url =[[NSBundle mainBundle] URLForResource:@&quot;录音.m4a&quot; withExtension:nil];</div><div class="line">    if (!url) return;</div><div class="line">    SFSpeechURLRecognitionRequest *res =[[SFSpeechURLRecognitionRequest alloc] initWithURL:url];</div><div class="line">    __weak typeof(self) weakSelf = self;</div><div class="line">    [localRecognizer recognitionTaskWithRequest:res resultHandler:^(SFSpeechRecognitionResult * _Nullable result, NSError * _Nullable error) &#123;</div><div class="line">        if (error) &#123;</div><div class="line">            NSLog(@&quot;语音识别解析失败,%@&quot;,error);</div><div class="line">        &#125;</div><div class="line">        else</div><div class="line">        &#123;</div><div class="line">            weakSelf.resultStringLable.text = result.bestTranscription.formattedString;</div><div class="line">        &#125;</div><div class="line">    &#125;];</div></pre></td></tr></table></figure>
+<ol>
+<li>一般都是可以用AVFoundation边录音边识别</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">AVAudioSession *audioSession = [AVAudioSession sharedInstance];</div><div class="line">    NSError *error;</div><div class="line">    [audioSession setCategory:AVAudioSessionCategoryRecord error:&amp;error];</div><div class="line">    NSParameterAssert(!error);</div><div class="line">    [audioSession setMode:AVAudioSessionModeMeasurement error:&amp;error];</div><div class="line">    NSParameterAssert(!error);</div><div class="line">    [audioSession setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&amp;error];</div><div class="line">    NSParameterAssert(!error);</div><div class="line">    </div><div class="line">    _recognitionRequest = [[SFSpeechAudioBufferRecognitionRequest alloc] init];</div><div class="line">    AVAudioInputNode *inputNode = self.audioEngine.inputNode;</div><div class="line">    NSAssert(inputNode, @&quot;录入设备没有准备好&quot;);</div><div class="line">    NSAssert(_recognitionRequest, @&quot;请求初始化失败&quot;);</div><div class="line">    _recognitionRequest.shouldReportPartialResults = YES;</div><div class="line">    __weak typeof(self) weakSelf = self;</div><div class="line">    _recognitionTask = [self.speechRecognizer recognitionTaskWithRequest:_recognitionRequest resultHandler:^(SFSpeechRecognitionResult * _Nullable result, NSError * _Nullable error) &#123;</div><div class="line">        __strong typeof(weakSelf) strongSelf = weakSelf;</div><div class="line">        BOOL isFinal = NO;</div><div class="line">        if (result) &#123;</div><div class="line">            strongSelf.resultStringLable.text = result.bestTranscription.formattedString;</div><div class="line">            isFinal = result.isFinal;</div><div class="line">        &#125;</div><div class="line">        if (error || isFinal) &#123;</div><div class="line">            [self.audioEngine stop];</div><div class="line">            [inputNode removeTapOnBus:0];</div><div class="line">            strongSelf.recognitionTask = nil;</div><div class="line">            strongSelf.recognitionRequest = nil;</div><div class="line">            strongSelf.recordButton.enabled = YES;</div><div class="line">            [strongSelf.recordButton setTitle:@&quot;开始录音&quot; forState:UIControlStateNormal];</div><div class="line">        &#125;</div><div class="line">     </div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    AVAudioFormat *recordingFormat = [inputNode outputFormatForBus:0];</div><div class="line">    //在添加tap之前先移除上一个  不然有可能报&quot;Terminating app due to uncaught exception &apos;com.apple.coreaudio.avfaudio&apos;,&quot;之类的错误</div><div class="line">    [inputNode removeTapOnBus:0];</div><div class="line">    [inputNode installTapOnBus:0 bufferSize:1024 format:recordingFormat block:^(AVAudioPCMBuffer * _Nonnull buffer, AVAudioTime * _Nonnull when) &#123;</div><div class="line">        __strong typeof(weakSelf) strongSelf = weakSelf;</div><div class="line">        if (strongSelf.recognitionRequest) &#123;</div><div class="line">            [strongSelf.recognitionRequest appendAudioPCMBuffer:buffer];</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [self.audioEngine prepare];</div><div class="line">    [self.audioEngine startAndReturnError:&amp;error];</div><div class="line">     NSParameterAssert(!error);</div><div class="line">    self.resultStringLable.text = @&quot;正在录音。。。&quot;;</div></pre></td></tr></table></figure>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>LittleSW</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2018/02/08/15180589189419/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2018/02/08/15180589189419/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2018/02/08/15180589189419/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2018/03/12/15205239182889/">
+        ← nvm npm node
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/01/15/15196245688317/">
+        布局、显示、约束 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

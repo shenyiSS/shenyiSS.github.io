@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>NSLog性能问题笔记 | LittleStingWhen</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="LittleStingWhen">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">LittleStingWhen</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-03-10T02:58:56.000Z" itemprop="datePublished">
+          2017-03-10
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">NSLog性能问题笔记</h1>
+    <section class="post-content">
+      <h3 id="NSLog"><a href="#NSLog" class="headerlink" title="NSLog"></a>NSLog</h3><h4 id="耗费资源问题"><a href="#耗费资源问题" class="headerlink" title="耗费资源问题"></a>耗费资源问题</h4><p>原因就是因为<code>NSLog</code>是为了error log所设计的，是基于<code>ASL</code>（Apple System Log是一个系统级别的log工具）的高层封装</p>
+<p>在<code>NSLog</code>调用的时候，会向<code>ASL</code>写log，同时也会向Terminal写log，而且同时会向<code>Console.app</code>中写。不仅如此，每一次<code>NSLog</code>都会新建一个ASL clinet并向ASL守护进程发起连接，log之后再关闭连接，所以会大量耗费资源</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><ul>
+<li>调试完成后删除NSLog代码</li>
+<li>在release版本用预编译宏过滤一下</li>
+<li>更换一个更高效的log系统，可以考虑lldb调试器打断点调试</li>
+</ul>
+<h4 id="关于一个log库的想法"><a href="#关于一个log库的想法" class="headerlink" title="关于一个log库的想法"></a>关于一个log库的想法</h4><ol>
+<li>需要有独立的开关，而且是方便开关</li>
+<li>分级，应该分成debug，info，default，warning，error等等级，并能根据release和debug显示不同等级</li>
+<li>日志保存，能够保存成文件，方便导出查看</li>
+<li>格式自定义，可以自定义是否显示时间，方法名，线程信息等</li>
+</ol>
+<p>有空自己写一个，参照<a href="https://github.com/CocoaLumberjack/CocoaLumberjack" target="_blank" rel="external">CocoaLumberjack</a></p>
+<p><a href="https://blog.sunnyxx.com/2014/04/22/objc_dig_nslog/" target="_blank" rel="external">原文链接</a></p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>LittleSW</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2017/03/10/15270596708587/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2017/03/10/15270596708587/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2017/03/10/15270596708587/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/06/07/15210096824918/">
+        ← MVC MVVM
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/02/15/2017regulations/">
+        hexo部署和更新博客 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

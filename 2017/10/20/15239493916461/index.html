@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Toll-Free Bridging | LittleStingWhen</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="LittleStingWhen">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">LittleStingWhen</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-10-20T14:58:56.000Z" itemprop="datePublished">
+          2017-10-20
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">Toll-Free Bridging</h1>
+    <section class="post-content">
+      <p>Toll-Free Bridging是指在CoreFoundation框架和Foundation框架想配对的数据类型间，可以自动转换使用的机制。</p>
+<p>语法则是在变量前加括号，中间写入配对的数据类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">NSLocale *gbNSLocale = [[NSLocale alloc] initWithLocaleIdentifier:@&quot;en_GB&quot;];</div><div class="line">CFLocaleRef gbCFLocale = (CFLocaleRef) gbNSLocale;</div><div class="line"></div><div class="line">CFLocaleRef myCFLocale = CFLocaleCopyCurrent();</div><div class="line">NSLocale * myNSLocale = (NSLocale *) myCFLocale;</div></pre></td></tr></table></figure>
+<p>当有一个Foundation的变量时，通过自动转换，可以传入一个CoreFoundation对应的类型参数的函数，同样，也可以向一个CoreFoundation级的变量发送OC消息</p>
+<p>并不是所有的类型都可以自动转换，支持自动转换的数据类型如下</p>
+<p><img src="http://ojx6xusf6.bkt.clouddn.com/669609-360b3ed478f7baba.png" alt=""></p>
+<h3 id="Toll-Free-Bridging和ARC"><a href="#Toll-Free-Bridging和ARC" class="headerlink" title="Toll-Free Bridging和ARC"></a>Toll-Free Bridging和ARC</h3><p>由于CoreFoundation框架下不支持ARC，这时候编译器无法处理同时又OC指针和CFTypeRef指向的对象，除了类型转换，还需要指定内存<strong>管理所有权</strong></p>
+<ul>
+<li><p><code>__bridge</code>(两个下划线)，类型转换时不改变内存管理方式</p>
+<ul>
+<li>Foundation-&gt;CoreFoundation，这时候编译器管理Foundation端的引用计数，不会在bridge的时候retain CoreFoundation端的对象，<em>不需要开发者在CoreFoundation端手动释放</em></li>
+<li>CoreFoundation-&gt;Foundation,编译器负责Foundation一端的内存管理，<em>开发者仍然需要手动release CoreFoundation一端的对象</em></li>
+</ul>
+</li>
+<li><p><code>__bridge_retained</code>和<code>CFBridgingRetain</code></p>
+<ul>
+<li><p>如果从Foundation类型转换成CoreFoundation类型时，Foundation的变量被释放，那么此时CoreFoundation的变量会崩溃。使用<code>__bridge_retained</code>或者<code>CFBridgingRetain</code>,在bridge的时候，编译器会retain CoreFoundation的对象，之后<em>手动管理内存</em>，防止上面的情况发生</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">        NSString *string = &lt;#Get a string#&gt;;</div><div class="line">CFStringRef cfString = (CFStringRef)CFBridgingRetain(string);</div><div class="line">//__bridge_retain写法</div><div class="line">//CFStringRef cfString = (__bridge_retain CFStringRef)(string);</div><div class="line">// Use the CF string.</div><div class="line">CFRelease(cfString);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><code>__bridge_transfer</code>和<code>CFBridgeRelease</code></p>
+<ul>
+<li>当从CoreFoundation转换为Foundation时，编译器转移了对象的所有权，开发者不需要再负责CoreFoundation对象的内存管理，说白了就是把一个CoreFoundation对象变成ARC管理内存</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h5 id="CFDictionary，NSDictionary"><a href="#CFDictionary，NSDictionary" class="headerlink" title="CFDictionary，NSDictionary"></a>CFDictionary，NSDictionary</h5><p>在Foundation中，字典对象中的Key内存管理语义为copy，Value的内存管理语义为retain。如果，Key所属类不支持NSCopying协议，在运行时就会报错。</p>
+<p>使用Foundation中的CFDictionary，其可变版本为CFMutableDictionary</p>
+<p>在CFMutableDictionary里面有两个指向结构体的指针，这两个指针中定义了很多回调，用于指示字典中的键和值在遇到各种事件时应该执行何种操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function">CFMutableDictionaryRef <span class="title">CFDictionaryCreateMutable</span><span class="params">(</span></span></div><div class="line">    CFAllocatorRef allocator, </div><div class="line">    CFIndex capacity, </div><div class="line">    <span class="keyword">const</span> CFDictionaryKeyCallBacks *keyCallBacks, <span class="comment">//key</span></div><div class="line">    <span class="keyword">const</span> CFDictionaryValueCallBacks *valueCallBacks <span class="comment">//Value</span></div><div class="line">);</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    CFIndex             version;</div><div class="line">    CFDictionaryRetainCallBack      retain; <span class="comment">//retain回调</span></div><div class="line">    CFDictionaryReleaseCallBack     release; <span class="comment">//release回调</span></div><div class="line">    CFDictionaryCopyDescriptionCallBack copyDescription;</div><div class="line">    CFDictionaryEqualCallBack       equal;</div><div class="line">    CFDictionaryHashCallBack        hash;</div><div class="line">&#125; CFDictionaryKeyCallBacks;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    CFIndex             version;</div><div class="line">    CFDictionaryRetainCallBack      retain;</div><div class="line">    CFDictionaryReleaseCallBack     release;</div><div class="line">    CFDictionaryCopyDescriptionCallBack copyDescription;</div><div class="line">    CFDictionaryEqualCallBack       equal;</div><div class="line">&#125; CFDictionaryValueCallBacks;</div></pre></td></tr></table></figure>
+<p>当字典中加入新的KeyValue时，就会调用retain函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//返回值void *是最后加入到字典里面的值</div><div class="line">typedef const void *    (*CFDictionaryRetainCallBack)(</div><div class="line">    CFAllocatorRef allocator, </div><div class="line">    const void *value //这个value是即将加入字典的键或者值</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>所以实现如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">//先定义Retain和Release回调</div><div class="line">const void* CustomRetainCallback(CFAllocatorRef allocator, const void *value) &#123;</div><div class="line">    return CFRetain(value);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void CustomReleaseCallback(CFAllocatorRef allocator, const void *value) &#123;</div><div class="line">    CFRelease(value);</div><div class="line">&#125;</div><div class="line">CFDictionaryKeyCallBacks keyCallbacks = &#123;</div><div class="line">    0,</div><div class="line">    CustomRetainCallback,</div><div class="line">    CustomReleaseCallback,</div><div class="line">    NULL,</div><div class="line">    CFEqual,</div><div class="line">    CFHash</div><div class="line">&#125;;</div><div class="line">CFDictionaryValueCallBacks valueCallbacks = &#123;</div><div class="line">    0,</div><div class="line">    CustomRetainCallback,</div><div class="line">    CustomReleaseCallback,</div><div class="line">    NULL,</div><div class="line">    CFEqual</div><div class="line">&#125;;</div><div class="line">CFMutableDictionaryRef aCFDictionary = CFDictionaryCreateMutable(NULL, 0, &amp;keyCallbacks, &amp;valueCallbacks);</div><div class="line">NSMutableDictionary *anNSDictionary = (__bridge_transfer NSMutableDictionary*)aCFDictionary;</div></pre></td></tr></table></figure>
+<h3 id="Toll-Free-Bridging原理"><a href="#Toll-Free-Bridging原理" class="headerlink" title="Toll-Free Bridging原理"></a>Toll-Free Bridging原理</h3><ol>
+<li>每一个能bridge的OC类，都是一个类簇，刚好这个OC类和CoreFoundation中的类内存结构相对应，<em>CoreFoundation类和类簇的一个私有子类相同</em></li>
+</ol>
+<p>例如NSString是一个类簇，创建NSString的实例时，实际上我们会获得的是一个私有子类，当这个子类是NSCFString时，其内存结构和CFString是相同的，CFString的isa指针就指向NSCFString类，<em>CFString对象就是一个NSCFString类的实例</em>，所以能直接转换</p>
+<blockquote>
+<p><strong>类簇</strong>是一个公开的抽象类，但是其核心功能是在不同的子类中实现的，公开类只暴露一致的接口和实现一些辅助的创建方法，比如说Number下就有Int,Float,Double等，NSData下有NSData和NSmutableData，NSArray下有NSArray和NSMutableArray，NSDictionary下有NSDictionary和NSMutableDictionary，NSString下有NSString和NSMutableString</p>
+</blockquote>
+<ol>
+<li>当NSString的实现的不是NSCFString时，我们调用CF函数，就需要先检查对象的具体实现。如果发现其不是NSCFString，则不会调用CF函数的实现来获得结果，而是通过给对象发送和函数功能相对应的OC消息（调用相应的NSString的接口）来获得其结果</li>
+</ol>
+<p>例如CFStringGetLength函数，当收到一个作为参数传进来的对象时，会先确认该对象到底是不是NSCFString实现。如果是，就会直接调用CFStringGetLength函数的实现来获得字符串的长度，如果不是的话，会给对象发送length消息（调用NSString的length对象方法），来获得字符串的长度</p>
+<ol>
+<li>其他支持Toll-Free Bridging的数据类型原理也同NSString一样，比如NSNumber的NSCFNumber和CFNumber</li>
+</ol>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>LittleSW</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2017/10/20/15239493916461/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2017/10/20/15239493916461/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2017/10/20/15239493916461/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2018/01/06/15271485313612/">
+        ← git学习笔记
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/06/07/15210096824918/">
+        MVC MVVM →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

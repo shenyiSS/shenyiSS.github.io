@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>MVC MVVM | LittleStingWhen</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="LittleStingWhen">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">LittleStingWhen</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-06-07T14:58:56.000Z" itemprop="datePublished">
+          2017-06-07
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">MVC MVVM</h1>
+    <section class="post-content">
+      <h3 id="MVC（Model-View-Controller）"><a href="#MVC（Model-View-Controller）" class="headerlink" title="MVC（Model-View-Controller）"></a>MVC（Model-View-Controller）</h3><p>用户操作View，传递给Controller处理，Controller更新Model，Model被更改了通知Controller，Controller去更新View。<br>其实往往发现自己的代码就是View和Controller是一体的，就是整个ViewController，用户操作由ViewController接收，ViewController去更新Model，Model改变了然后告诉ViewController更改显示，这样就真的实现了传说中的<strong>Massive ViewController</strong>，很不利于编写测试和后期维护代码扩展功能</p>
+<h3 id="MVVM（Model-View-ViewModel）"><a href="#MVVM（Model-View-ViewModel）" class="headerlink" title="MVVM（Model-View-ViewModel）"></a>MVVM（Model-View-ViewModel）</h3><p>View实现显示，去绑定ViewModel，当ViewModel改变的时候去改变显示。</p>
+<p>ViewModel负责主要逻辑处理，在绑定View组件后，当View接收到操作后，ViewModel会自动触发逻辑，去更新Model，Model更新后，通知ViewModel，ViewModel再去根据Model去改变绑定的View的显示<br>换一种表达方式，就是ViewModel 从 View 接收用户交互，从 Model 中提取数据，然后将数据处理为一组即将显示的相关属性。在 ViewModel 变化后，View 就会自动更新。</p>
+<h5 id="View"><a href="#View" class="headerlink" title="View"></a>View</h5><p>在MVVM中的View就是表示UIView和UIViewController这些，View只做UI的显示，还有把UI组件绑定ViewModel</p>
+<h5 id="ViewModel"><a href="#ViewModel" class="headerlink" title="ViewModel"></a>ViewModel</h5><p>在ViewModel中就是处理逻辑（网络请求，结果处理，数据处理等），提供显示接口到View。</p>
+<p>拿最常见的tableView的例子来说，ViewController是tableView的delegate，dataSource，实现代理方法，在cellForRow方法里面，从ViewModel里面获取相应的indexPath的cellViewModel（ViewModel根据网络请求，把数据解析成cellModel的数组，然后在转化成cellViewModel的数组），进行数据的显示，ViewModel是MVVM的核心<br><strong>这里需要注意的是UI显示还是由view来实现，比如说hud的操作，alert的弹出等</strong></p>
+<h4 id="绑定（bind）ViewModel"><a href="#绑定（bind）ViewModel" class="headerlink" title="绑定（bind）ViewModel"></a>绑定（bind）ViewModel</h4><p>说到这里有个问题不得不解决，UI组件和ViewModel之间绑定，实现绑定可以通过KVO，可以通过RAC（ReactiveCocoa），甚至可以自己定制去实现。</p>
+<p>KVO方案会涉及到大量的addObserve和removeObserve，这就会很繁重<br>RAC的响应式编程，就很适合MVVM了，值得花时间好好研究学习<br>自己实现的话可以用闭包或block做回调去实现</p>
+<p>将View和ViewModel绑定后，ViewModel一改变，就会执行View中的回调，进行相应的UI改变。tableView中就是ViewController绑定了tableViewViewModel的cellViewModels，tableViewViewModel改变cellViewModels时，ViewController就会被通知到去执行cell的更新</p>
+<!--这里记录一个坑，回调中的有些跟UI有关系的记得放在主线程中调用-->
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>LittleSW</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2017/06/07/15210096824918/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2017/06/07/15210096824918/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2017/06/07/15210096824918/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/10/20/15239493916461/">
+        ← Toll-Free Bridging
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/03/10/15270596708587/">
+        NSLog性能问题笔记 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

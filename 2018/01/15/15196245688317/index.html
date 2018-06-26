@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>布局、显示、约束 | LittleStingWhen</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="LittleStingWhen">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">LittleStingWhen</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-01-15T13:48:56.000Z" itemprop="datePublished">
+          2018-01-15
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">布局、显示、约束</h1>
+    <section class="post-content">
+      <h3 id="Run-loop"><a href="#Run-loop" class="headerlink" title="Run loop"></a>Run loop</h3><p>一个应用的<strong>Main Run loop</strong>负责处理所有的用户输入事件并触发相应的响应。<br>用户的交互都会被加入一个事件队列中，<code>Application Object</code>会从队列中取出事件并将它们分发到应用中的其他对象（Core objects）上，对应相应的代码处理逻辑，这些代码调用返回后，控制流回到主<code>Run loop</code>上，然后开始<code>update cycle</code>，<code>Update cycle</code>负责布局并且重新渲染view。</p>
+<p><code>Update cycle</code>-&gt;<code>Main Run Loop</code>-&gt;<code>Update cycle</code>-&gt;<code>Main Run Loop</code>-&gt;……</p>
+<h3 id="Update-Cycle"><a href="#Update-Cycle" class="headerlink" title="Update Cycle"></a>Update Cycle</h3><p>在<code>Update Cycle</code>时，系统开始更新布局，显示和设置约束。<br>在代码中修改了一个view，系统就会标记这个view需要<code>redraw</code>，下一个<code>Update cycle</code>中，系统就会执行这个view的修改。<br>iOS应用一般是60fps，由于在处理事件和重画view存在着间隔，<code>Run Loop</code>中某个时刻的view显示可能不是你想要的结果。当代码中存在依赖当前view的布局或者内容的情况下，那么就有存在操作过时view信息的风险。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p><strong>布局</strong>是指一个视图在屏幕上的大小和位置。</p>
+<h5 id="layoutSubviews"><a href="#layoutSubviews" class="headerlink" title="layoutSubviews()"></a>layoutSubviews()</h5><p>这个方法处理view和subviews的位置和大小，会调用每个子视图的<code>layoutSubviews</code>方法。当你改变一个view的frame的时候，系统会自动调用这个方法，并不需要用户显式调用这个方法，有许多在<code>Run Loop</code>的不同时间点触发<code>layoutSubviews</code>调用的机制，这些触发机制比直接调用<code>layoutSubviews</code>的资源消耗小的多。<br><strong>最好不会要直接调用这个方法</strong><br>当<code>layoutSubviews</code>完成后，在view的所属viewController上，会触发<code>viewDidLayoutSubviews</code>调用，这个方法是唯一在布局更新后调用的方法，能避免使用过时的布局和位置</p>
+<h5 id="自动刷新触发器"><a href="#自动刷新触发器" class="headerlink" title="自动刷新触发器"></a>自动刷新触发器</h5><p>有许多事件会自动给视图打上<em>update layout</em>的标记，因此这个视图的<code>layoutSubviews</code>会在下个周期中被调用，这些事件有：</p>
+<ul>
+<li>修改view的大小</li>
+<li>新增subview</li>
+<li>用户在<code>UIScrollView</code>上滚动（会在scrollView和）</li>
+<li>设备旋转</li>
+<li>更新view的constraints</li>
+</ul>
+<h4 id="直接触发layoutSubviews"><a href="#直接触发layoutSubviews" class="headerlink" title="直接触发layoutSubviews"></a>直接触发<code>layoutSubviews</code></h4><h5 id="setNeedsLayout"><a href="#setNeedsLayout" class="headerlink" title="setNeedsLayout()"></a>setNeedsLayout()</h5><p>这种方法调用<code>layoutSubviews</code>最省资源，视图更新会在下一个update cycle中更新</p>
+<h5 id="layoutIfNeeded"><a href="#layoutIfNeeded" class="headerlink" title="layoutIfNeeded()"></a>layoutIfNeeded()</h5><p>当视图需要更新的时候，会立即调用<code>layoutSubviews</code>，不需要更新的时候，就不调用</p>
+<h3 id="显示"><a href="#显示" class="headerlink" title="显示"></a>显示</h3><p>显示包含颜色，文本，图片和CoreGraphics等视图属性</p>
+<h5 id="drawRect"><a href="#drawRect" class="headerlink" title="drawRect()"></a>drawRect()</h5><p><strong>不要直接显示调用</strong>，类似布局中的<code>layoutSubviews</code>方法，但是不会调用子视图的<code>drawRect</code></p>
+<h5 id="setNeedsDisplay"><a href="#setNeedsDisplay" class="headerlink" title="setNeedsDisplay()"></a>setNeedsDisplay()</h5><p>这个方法会在下一个update cycle时重绘需要更新的视图</p>
+<h3 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h3><p>更新约束-&gt;布局-&gt;显示</p>
+<h5 id="updateConstraints"><a href="#updateConstraints" class="headerlink" title="updateConstraints()"></a>updateConstraints()</h5><p><code>updateConstraints()</code><strong>不要在代码中显示的调用</strong>，开启或者关闭constraints，更改constrain的属性或者常量值，或者从视图层级中移除一个视图都会设置一个标记，这个标记会再下一个update cycle中触发调用<code>updateConstrains</code></p>
+<h5 id="setNeedsUpdateConstraints"><a href="#setNeedsUpdateConstraints" class="headerlink" title="setNeedsUpdateConstraints()"></a>setNeedsUpdateConstraints()</h5><p>这个方法会保证在下一个update cycle时更新约束</p>
+<h5 id="updateConstraintsIfNeeded"><a href="#updateConstraintsIfNeeded" class="headerlink" title="updateConstraintsIfNeeded()"></a>updateConstraintsIfNeeded()</h5><p>对于自动布局的视图，如果存在需要被更新的约束，它会立即触发<code>updateConstraints()</code>，不会等到<code>run loop</code>结尾</p>
+<h5 id="invalidateIntrinsicContentSize"><a href="#invalidateIntrinsicContentSize" class="headerlink" title="invalidateIntrinsicContentSize()"></a>invalidateIntrinsicContentSize()</h5><p>自动布局中某些视图拥有<code>intrinsicContentSize</code>属性，这是视图根据它的内容得到的自然尺寸，一个视图的<code>intrinsicContentSize</code>通常由所包含的元素的约束决定，但也可以通过重载提供自定义行为，调用<code>invalidateIntrinsicContentSize()</code>会设置一个标记表示这个视图的<code>intrinsicContentSize</code>已经过期，需要在下一个布局阶段重新计算</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在update cycle的阶段会根据constraints-&gt;layout-&gt;display的顺序检查，是否需要去更新，一旦更新结束，<code>run loop</code>会重新运行，在<code>run loop</code>阶段可以直接调用<code>layoutIfNeeded</code>和<code>updateConstraintsIfNeeded</code>来立即更新，但是开销会很大</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>LittleSW</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2018/01/15/15196245688317/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2018/01/15/15196245688317/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2018/01/15/15196245688317/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2018/02/08/15180589189419/">
+        ← iOS原生语音识别
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/01/06/15271485313612/">
+        git学习笔记 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

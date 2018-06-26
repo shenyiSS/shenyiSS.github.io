@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>git学习笔记 | LittleStingWhen</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="LittleStingWhen">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">LittleStingWhen</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-01-06T09:51:56.000Z" itemprop="datePublished">
+          2018-01-06
+      </time>
+    
+    
+    | 
+    <a href='/tags/Personal/'>Personal</a>
+    
+    
+</span>
+    <h1 class="post-title">git学习笔记</h1>
+    <section class="post-content">
+      <ol>
+<li>集中式版本控制：CVS，SVN，分布式：git</li>
+<li>git的优势是在强大的分支管理</li>
+<li>git add 添加工作区的文件到暂存区</li>
+<li>git commit 把暂存区的所有更改提交更改到仓库</li>
+<li>git status 是用来查看当前仓库的状态</li>
+<li>git diff 是用来查看工作区和暂存区的比较，<code>git diff --cached</code>是比较暂存区和分支的比较</li>
+<li>git log 是用来查看提交日志的，可以添加<code>--pretty=oneline</code>可以简化日志显示</li>
+<li>git reset 是用来回退版本，当前版本为<code>HEAD</code>，上个版本为<code>HEAD^</code>，上上个版本为<code>HEAD^^</code>，往上一百个版本为<code>HEAD~100</code></li>
+<li>git reflog 是用来查看每一次更改的历史命令</li>
+<li>在创建git版本库的时候，自动创建了一个<code>master</code>分支，工作区（Working Directory）是我们电脑上项目的文件夹，在工作区下有个<code>.git</code>的隐藏目录，里面有暂存区（stage）和一个分支<code>master</code>，以及指向<code>master</code>的一个指针<code>HEAD</code></li>
+<li><code>git check -- &lt;file&gt;</code>的意思就是<strong>撤销工作区修改</strong>，如果修改后被放到暂存区，则撤回到暂存区版本，如果修改后没有被放到暂存区，则退回到版本库版本</li>
+<li><strong>撤销暂存区修改</strong>可以先用<code>git reset HEAD &lt;file&gt;</code>把暂存区的修改放回工作区，再用<code>git check -- &lt;file&gt;</code>命令把工作区的修改撤销</li>
+<li>删除文件<code>git rm &lt;file&gt;</code>，误删的文件恢复<code>git check -- &lt;file&gt;</code></li>
+<li>在关联远程仓库之后，本地commit之后，如果有必要的话，用<code>git push origin master</code>推送到远程服务器上面，origin是远程仓库的名字，master是分支名称</li>
+<li>git clone是把远程仓库克隆到本地，Git支持多种协议https，ssh</li>
+<li><code>git checkout -b dev</code>就是创建dev分支，然后切换到dev分支，相当一<code>git branch dev</code>和<code>git checkout dev</code>两条命令，<code>git branch</code>查看当前分支情况</li>
+<li><code>git merge dev</code>是把名字叫dev的分支合并到当前分支上</li>
+<li><code>git branch -d dev</code>是把叫dev的分支给删除</li>
+<li>合并分支的时候可能会有冲突，这样的情况下就是先解决冲突，再重新commit</li>
+<li>合并分支的时候，有时候会触发<code>fast foward</code>合并，只是简单的把指针改变一下，并没有生成commit信息，可以使用<code>git merge --no-ff</code>强制不使用<code>fast foward</code></li>
+<li>可以使用<code>git stash</code>把手头的工作先保存一下，去干其他事情，然后可以再用<code>git stash pop</code>回来。可以使用<code>git stash list</code>查看被保存的工作</li>
+<li>查看远程库信息<code>git remote -v</code></li>
+<li>多人远程推送，本地推送<code>git push origin &lt;branch-name&gt;</code>，如果推送失败，要使用<code>git pull</code>拉取最新版本，如果有冲突，<strong>先解决冲突</strong>，并在本地提交，并再次尝试<code>git push origin &lt;branch-name&gt;</code></li>
+<li>在本地<strong>创建</strong>和远程分支对应的分支<code>git checkout -b branch-name origin/branch-name</code></li>
+<li>建立本地分支和远程分支<strong>关联</strong>，使用<code>git branch --set-upstream branch-name origin/branch-name</code></li>
+<li>使用命令<code>git tag &lt;tagname&gt;</code>用于新建一个标签，默认为HEAD，使用<code>git tag -a &lt;tagname&gt; -m &quot;xxxxx&quot;</code>可以指定标签信息</li>
+<li>标签一般都是在本地，使用命令<code>git push origin &lt;tagname&gt;</code>可以推送一个本地标签，<code>git tag -d &lt;tagname&gt;</code>是删除一个本地的标签，<code>git tag origin :refs/tags/&lt;tagname&gt;</code>可以删除一个远程标签</li>
+<li>使用github，可以先fork一个项目，在自己账号下生成一个同样的仓库，然后clone这个仓库到本地，就可以提修改或者新增功能，然后再推送到自己的仓库，可以向原来的仓库发起pull request，别人可以选择是否接受</li>
+<li></li>
+</ol>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>LittleSW</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2018/01/06/15271485313612/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2018/01/06/15271485313612/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2018/01/06/15271485313612/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2018/01/15/15196245688317/">
+        ← 布局、显示、约束
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/10/20/15239493916461/">
+        Toll-Free Bridging →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

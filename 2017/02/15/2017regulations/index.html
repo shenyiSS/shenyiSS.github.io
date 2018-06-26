@@ -59,30 +59,22 @@
 <li><p>更改hexo服务器端口号<code>$ hexo server -p 5000</code>，从默认的4000更改到5000</p>
 </li>
 <li><p>修改主题方法是两步，先下载主题然后放到博客中的themes文件夹（专门用来存放主题）下，再修改主题的配置文件_config.yml中相关参数，启用themes文件夹下新增的主题,例如</p>
-<ol>
-<li><p>下载Next主题:</p>
-<p> 进入 hexoBlog/themes 文件夹中，打开Git Bash面板，输入：<br> <code>git clone https://github.com/iissnan/hexo-theme-next themes/next</code><br> 把主题包克隆到themes文件夹中即可。</p>
-</li>
-<li><p>启用主题:</p>
-<p> 与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开themes下的主题配置文件_config.yml， 找到 theme 字段，并将其值更改为 next（注意冒号后面要留一个 空格）。</p>
-</li>
-<li><p>验证主题:</p>
-<p> 清除并重新生成hexo静态文件，启动本地服务器，然后通过<a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a> 预览博客：</p>
-<pre><code>hexo clean         #清除静态文件
-hexo g          #重新生成静态文件
-hexo s         #启动服务器
+<p> a. 下载Next主题:</p>
+<pre><code>进入 hexoBlog/themes 文件夹中，打开Git Bash面板，输入：
+`git clone https://github.com/iissnan/hexo-theme-next themes/next`
+把主题包克隆到themes文件夹中即可。
+</code></pre><p> b. 启用主题:</p>
+<pre><code>与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开themes下的主题配置文件_config.yml， 找到 theme 字段，并将其值更改为 next（注意冒号后面要留一个 空格）。
+</code></pre><p> c. 验证主题:</p>
+<pre><code>清除并重新生成hexo静态文件，启动本地服务器，然后通过http://localhost:4000 预览博客：
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">		 hexo clean         #清除静态文件</div><div class="line">		 hexo g          #重新生成静态文件</div><div class="line">		 hexo s         #启动服务器</div><div class="line">		``` </div><div class="line">		</div><div class="line">5. 每次更新博客</div><div class="line">	* 书写博客md文件</div><div class="line">	* 进入XXX.github.io文件夹，`hexo server`或者`hexo s`运行服务器，预览</div><div class="line">	* 审核无误后运行`hexo clean &amp;&amp; hexo g &amp;&amp; hexo d`(清除文件，生成新文件，部署到github服务器) </div><div class="line"></div><div class="line">6. 更改地址到自定义域名，登录github，进入到博客仓库，点击setting，选择custom domain ，输入要自定义的域名，更改保存，每次`hexo d`之后都要进行这个操作</div><div class="line"></div><div class="line"></div><div class="line">#### 小问题</div><div class="line"></div><div class="line">1. 当`brew list`的时候能看到nvm，但是在终端输入nvm却提示`command not found:nvm`，这个时候在终端输入</div></pre></td></tr></table></figure>
 </code></pre></li>
 </ol>
-</li>
-<li><p>每次更新博客</p>
-<ul>
-<li>书写博客md文件</li>
-<li>进入XXX.github.io文件夹，<code>hexo server</code>或者<code>hexo s</code>运行服务器，预览</li>
-<li>审核无误后运行<code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code>(清除文件，生成新文件，部署到github服务器) </li>
-</ul>
-</li>
-<li><p>更改地址到自定义域名，登录github，进入到博客仓库，点击setting，选择custom domain ，输入要自定义的域名，更改保存，每次<code>hexo d</code>之后都要进行这个操作</p>
-</li>
+<p>export NVM_DIR=~/.nvm<br>source $(brew –prefix nvm)/nvm.sh<br>```</p>
+<p>就能解决问题了，当然这是解决当前窗口，要是想不每次都输入就把这两句话加到 ~/.bash_profile , zsh的话是 ~/.zshrc（我用的就是zsh）</p>
+<ol>
+<li>由于电脑上有两个版本的nvm，hexo是在v4.7.2下的，但是默认的是v9.7.1,这时候只要输入<code>nvm list</code>查看一下版本信息，然后<code>nvm use v4.7.2</code>，就能在当前终端窗口使用指定版本</li>
 </ol>
 
     </section>
@@ -109,6 +101,10 @@ hexo s         #启动服务器
     </footer>
   </article>
   <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/03/10/15270596708587/">
+        ← NSLog性能问题笔记
+    </a>
     
     <span class="page-number">•</span>
     
