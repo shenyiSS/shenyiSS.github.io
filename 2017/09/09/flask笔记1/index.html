@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>flask笔记1 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-09-09T01:13:29.000Z" itemprop="datePublished">
+          2017-09-09
+      </time>
+    
+    
+    | 
+    <a href='/tags/python/'>python</a>,
+    
+    <a href='/tags/Flask/'>Flask</a>
+    
+    
+</span>
+    <h1 class="post-title">flask笔记1</h1>
+    <section class="post-content">
+      <h4 id="20170823-Flask-1"><a href="#20170823-Flask-1" class="headerlink" title="20170823 Flask-1"></a>20170823 Flask-1</h4><ol>
+<li><p>环境:PyCharm (2017.2.1),  Flask(0.12.2), Python(2.7.10)</p>
+</li>
+<li><p>创建Flask程序</p>
+<ul>
+<li>使用<code>Virtualenv</code>创建一个新环境，安装Flask<code>pip install Flask</code></li>
+<li>用Pycharm创建一个新的Project，选择Flask，Interperter选择刚才创建的新环境，Template language选择默认的Jinja2</li>
+</ul>
+</li>
+<li><p>代码</p>
+<ul>
+<li><p>创建一个Flask程序</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#encoding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="comment">#创建Flask对象</span></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line"><span class="comment">#Pycharm默认地址是http://127.0.0.1:5000/</span></div><div class="line"><span class="comment">#用装饰器设置http://127.0.0.1:5000/的url和下面视图函数的映射</span></div><div class="line"><span class="meta">@app.route('/')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">print</span> url_for(<span class="string">'my_list'</span>)</div><div class="line">    <span class="keyword">print</span> url_for(<span class="string">'article'</span>, id=<span class="number">123</span>)</div><div class="line">    <span class="keyword">return</span> <span class="string">'Hello World!'</span></div><div class="line">    </div><div class="line"><span class="meta">@app.route('/list/')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_list</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">'list'</span></div><div class="line"></div><div class="line"><span class="comment">#url传参，要用尖括号包围&lt;id&gt;,视图函数中的参数名应该和url中参数同名</span></div><div class="line"><span class="meta">@app.route('/article/&lt;id&gt;')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">article</span><span class="params">(id)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">u'您请求的参数是:%s'</span> % id</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line"><span class="comment">#debug=True开启debug模式</span></div><div class="line">    app.run(debug=<span class="keyword">True</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>用配置文件添加配置</p>
+<ul>
+<li><p>首先创建一个配置文件config.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#encoding:utf-8</span></div><div class="line">DEBUG = <span class="keyword">True</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>在主文件中</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#encoding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="comment">#创建Flask对象</span></div><div class="line">app = Flask(__name__)</div><div class="line"><span class="comment">#导入配置文件</span></div><div class="line">app.config.from_object(config)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>反转url和页面重定向</p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">	<span class="comment">#encoding:utf-8</span></div><div class="line"></div><div class="line">	<span class="keyword">from</span> flask <span class="keyword">import</span> Flask, url_for, redirect</div><div class="line"></div><div class="line">	app = Flask(__name__)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">	@app.route('/')</span></div><div class="line">	<span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></div><div class="line">	<span class="comment">#反转url：由视图函数得到视图函数对应的url，使用url_for函数</span></div><div class="line">	    login_url = url_for(<span class="string">'login'</span>)</div><div class="line">	    <span class="keyword">return</span> redirect(login_url)</div><div class="line">	    <span class="keyword">return</span> <span class="string">u'这是首页'</span></div><div class="line">	</div><div class="line"><span class="meta">	@app.route('/login/')</span></div><div class="line">	<span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span>:</span></div><div class="line">	    <span class="keyword">return</span> <span class="string">u'这是登录页面'</span></div><div class="line">	</div><div class="line">	<span class="comment">#页面重定向：redirect函数，根据&lt;is_login&gt;判断返回的url</span></div><div class="line"><span class="meta">	@app.route('/question/&lt;is_login&gt;')</span></div><div class="line">	<span class="function"><span class="keyword">def</span> <span class="title">question</span><span class="params">(is_login)</span>:</span></div><div class="line">	    <span class="keyword">if</span> is_login == <span class="string">'1'</span>:</div><div class="line">	        <span class="keyword">return</span> <span class="string">u'这是问答页面 '</span></div><div class="line">	    <span class="keyword">else</span>:</div><div class="line">	        <span class="keyword">return</span> redirect(url_for(<span class="string">'login'</span>))</div><div class="line">	</div><div class="line">	<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">	    app.run(debug=<span class="keyword">True</span>)</div><div class="line">	``` </div><div class="line">	</div><div class="line"><span class="comment">#### 20170825</span></div><div class="line"><span class="number">1.</span> 在遇到`urllib.error.URLError: &lt;urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:<span class="number">749</span>)&gt;`错误的时候:</div><div class="line"></div><div class="line">	```python</div><div class="line">	<span class="keyword">import</span> ssl</div><div class="line">	<span class="comment">#在urllib.openurl之前添加,导入ssl时关闭证书验证</span></div><div class="line">	ssl._create_default_https_context = ssl._create_unverified_context</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>另外有一种解决办法：</p>
+<pre><code><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#使用ssl创建未经验证的上下文，在urlopen中传入上下文参数</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> ssl</div><div class="line"><span class="keyword">import</span> urllib2</div><div class="line"> </div><div class="line">context = ssl._create_unverified_context()</div><div class="line"><span class="keyword">print</span> urllib2.urlopen(<span class="string">"https://www.111cn.net/"</span>, context=context).read()</div></pre></td></tr></table></figure>
+</code></pre><ol>
+<li>/documents/pythoncode/meinvspider</li>
+</ol>
+<h4 id="20170904"><a href="#20170904" class="headerlink" title="20170904"></a>20170904</h4><ol>
+<li><p>安装mysql在macOS上</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">先安装mysql，开启服务</div><div class="line"></div><div class="line">再sudo pip install mysql-python</div><div class="line">//出现错误提示</div><div class="line">Command &quot;python setup.py egg_info&quot; failed with error code 1 in /private/tmp/pip-build-0cAxrA/mysql-python/</div><div class="line">//使用这个解决</div><div class="line">export PATH=$PATH:/usr/local/mysql/bin</div></pre></td></tr></table></figure>
+<p> 配置PATH<br> 打开<code>~/.bash_profile</code>文件，在path后面添加<code>:/usr/local/mysql/bin</code>,例如</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">	PATH=&quot;/Library/Frameworks/Python.framework/Versions/3.6/bin:/usr/local/mysql/bin:$&#123;PATH&#125;&quot;</div><div class="line">export PATH</div></pre></td></tr></table></figure>
+<p> 关于其他配置PATH方式也可以自己搜索</p>
+</li>
+<li><p>安装flask-SQLAlchemy:<code>sudo pip install flask=sqlalchemy</code>,ORM:Object Relationship Mapping(模型关系映射)</p>
+</li>
+</ol>
+<h4 id="20170908"><a href="#20170908" class="headerlink" title="20170908"></a>20170908</h4><ol>
+<li>使用flask-SQLAlchemy创建模型和表的映射：<ul>
+<li>模型需要继承自<code>db.Model</code> ，然后需要映射到表中的属性，必须写成<code>db.Column</code>的数据类型</li>
+<li>数据类型<ul>
+<li><code>db.Integer</code>代表的是整形</li>
+<li><code>db.String</code>代表的是<code>varchar</code>,需要指定长度</li>
+<li><code>db.Text</code>代表的是<code>Text</code></li>
+</ul>
+</li>
+<li>其他参数<ul>
+<li><code>primary_key</code>代表的是将该字段设为主键</li>
+<li><code>autoincrement</code>代表的是自增长</li>
+<li><code>nullable</code>代表的是字段是否可以为空（默认可以为空）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2017/09/09/flask笔记1/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2017/09/09/flask笔记1/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2017/09/09/flask笔记1/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/10/20/15239493916461/">
+        ← Toll-Free Bridging
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/06/09/iOS中的AES加密/">
+        iOS中的AES加密 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

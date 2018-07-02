@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Unity 打包安卓 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-04-09T13:13:29.000Z" itemprop="datePublished">
+          2018-04-09
+      </time>
+    
+    
+    | 
+    <a href='/tags/Unity/'>Unity</a>
+    
+    
+</span>
+    <h1 class="post-title">Unity 打包安卓</h1>
+    <section class="post-content">
+      <p>整体实现思路就是先在Unity里面实现安卓的逻辑，保证方法名称的一致性，先把Untiy中导出安卓项目，然后再在安卓项目下打包整理逻辑</p>
+<ol>
+<li>build的时候切换成安卓，在<em>play setting</em>里面的<em>Package Name</em>这里设置BundleID,最上面的Product Name设置项目名称</li>
+<li>Target API Level 选择22，Minimum API Level选择16</li>
+<li>在Build Setting弹出框里面选择Export Project，点击Export</li>
+<li>导出项目成功之后，用AS打开项目，File-&gt;New-&gt;import Module，选择安卓工程师给的lib项目，点击Finish导入成功</li>
+<li>打开Project（ProductName）-&gt;java-&gt;com.ehoo.pet(PackageName)-&gt;UnityPlayerActivity.java，<code>@Override protected void onCreate(Bundle savedInstanceState)</code>方法里面写初始化代码，并在此java文件里面添加需要安卓原生实现的逻辑，提供给外部接口</li>
+<li><p>在Unity的脚本中调用安卓方法示例</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#if UNITY_ANDROID</div><div class="line">        AndroidJavaClass javaClass = new AndroidJavaClass (&quot;com.unity3d.player.UnityPlayer&quot;);</div><div class="line">        AndroidJavaObject javaObj = javaClass.GetStatic&lt;AndroidJavaObject&gt; (&quot;currentActivity&quot;);</div><div class="line">        //这里就是调用的getTodaySportStepArray，返回值是string类型</div><div class="line">        javaObj.Call&lt;string&gt;(&quot;getTodaySportStepArray&quot;);</div><div class="line">#endif</div></pre></td></tr></table></figure>
+</li>
+</ol>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/04/09/Unity 打包安卓/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/04/09/Unity 打包安卓/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/04/09/Unity 打包安卓/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2018/05/22/RN小笔记1/">
+        ← RN小笔记1
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/03/27/15221337362830/">
+         →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

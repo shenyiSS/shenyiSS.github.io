@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS适配 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-03-29T08:28:56.000Z" itemprop="datePublished">
+          2017-03-29
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS适配</h1>
+    <section class="post-content">
+      <p>当前我们需要适配的iPhone机型有3.5寸（iPhone4s 320, 480）、4寸（iPhone5 320, 568）、4.7寸（iPhone6 375, 667）、5.5寸（iPhone6P 414, 736）四种机型。</p>
+<p>而一般我习惯在实际的项目开发中，使用Masonry来搭建UI界面，虽然在Masonry中我们能很方便的设置各个控件之间的约束，但是对于类似4s机型和6s Plus机型的很大的高度差，有时候仅仅靠一次性成型的约束还是搭建不出很合理的界面。</p>
+<p>于是在这次搭建UI的过程中，我的一个思路就是按照比例，针对各个机型进行微调。思路如下:</p>
+<ul>
+<li><p>UI提供的效果图是基于iPhone6的效果图</p>
+</li>
+<li><p>而我只需要将标注上的每个尺寸去对比iPhone6换算出比例，这样一些间距就能按照不同机型尺寸的比例变得不一样。</p>
+</li>
+<li><p>针对考虑交互体验的控件，在保持尺寸不变的基础上，做细节微调。<br>在具体的代码中，我封装出了一个类，定义了两个类方法专门去适配所有机型的高度和宽度。思路就是上述按不同机型针对于iPhone6的比例而适配。</p>
+</li>
+</ul>
+<p><code>.h</code>文件</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;UIKit/UIKit.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSInteger</span>, IPhoneType) &#123;</div><div class="line">    iPhone4Type = <span class="number">0</span>,</div><div class="line">    iPhone5Type,</div><div class="line">    iPhone6Type,</div><div class="line">    iPhone6PlusType</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CalculateLayout</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  基于UI设计的iPhone6设计图的全机型高度适配</div><div class="line"> *</div><div class="line"> *  @param height View高度</div><div class="line"> *</div><div class="line"> *  @return  CGFloat 适配后的高度</div><div class="line"> */</div><div class="line"></div><div class="line">+ (<span class="built_in">CGFloat</span>)neu_layoutForAlliPhoneHeight:(<span class="built_in">CGFloat</span>)height;</div><div class="line"><span class="comment">/**</span></div><div class="line"> *  基于UI设计的iPhone6设计图的全机型宽度适配</div><div class="line"> *</div><div class="line"> *  @param width 宽度</div><div class="line"> *</div><div class="line"> *  @return 适配后的宽度</div><div class="line"> */</div><div class="line">+ (<span class="built_in">CGFloat</span>)neu_layoutForAlliPhoneWidth:(<span class="built_in">CGFloat</span>)width;</div></pre></td></tr></table></figure>
+<p><code>.m</code>文件</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define iPhone4Height (480.f)</span></div><div class="line"><span class="meta">#define iPhone4Width  (320.f)</span></div><div class="line"></div><div class="line"><span class="meta">#define iPhone5Height (568.f)</span></div><div class="line"><span class="meta">#define iPhone5Width  (320.f)</span></div><div class="line"></div><div class="line"><span class="meta">#define iPhone6Height (667.f)</span></div><div class="line"><span class="meta">#define iPhone6Width  (375.f)</span></div><div class="line"></div><div class="line"><span class="meta">#define iPhone6PlusHeight (736.f)</span></div><div class="line"><span class="meta">#define iPhone6PlusWidth  (414.f)</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - 适配所有机型高度</span></div><div class="line">+ (<span class="built_in">CGFloat</span>)neu_layoutForAlliPhoneHeight:(<span class="built_in">CGFloat</span>)height &#123;</div><div class="line">    <span class="built_in">CGFloat</span> layoutHeight = <span class="number">0.0</span>f;</div><div class="line">    <span class="keyword">if</span> (iPhone4) &#123;</div><div class="line">        layoutHeight = ( height / iPhone6Height ) * iPhone4Height;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (iPhone5) &#123;</div><div class="line">        layoutHeight = ( height / iPhone6Height ) * iPhone5Height;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (iPhone6) &#123;</div><div class="line">        layoutHeight = ( height / iPhone6Height ) * iPhone6Height;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (iPhone6P) &#123;</div><div class="line">        layoutHeight = ( height / iPhone6Height ) * iPhone6PlusHeight;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        layoutHeight = height;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> layoutHeight;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="built_in">CGFloat</span>)neu_layoutForAlliPhoneWidth:(<span class="built_in">CGFloat</span>)width &#123;</div><div class="line">    <span class="built_in">CGFloat</span> layoutWidth = <span class="number">0.0</span>f;</div><div class="line">    <span class="keyword">if</span> (iPhone4) &#123;</div><div class="line">        layoutWidth = ( width / iPhone6Width ) * iPhone4Width;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (iPhone5) &#123;</div><div class="line">        layoutWidth = ( width / iPhone6Width ) * iPhone5Width;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (iPhone6) &#123;</div><div class="line">        layoutWidth = ( width / iPhone6Width ) * iPhone6Width;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (iPhone6P) &#123;</div><div class="line">        layoutWidth = ( width / iPhone6Width ) * iPhone6PlusWidth;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> layoutWidth;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实这里应该可以再扩展iPad的尺寸进来，毕竟苹果爸爸要求iPhoneApp也要在iPad上能运行</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2017/03/29/iOS适配/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2017/03/29/iOS适配/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2017/03/29/iOS适配/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/06/07/15210096824918/">
+        ← MVC MVVM
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/03/29/iOS中的禁用横屏方案/">
+        iOS中的禁用横屏方案 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

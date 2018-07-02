@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS中的禁用横屏方案 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-03-29T08:28:56.000Z" itemprop="datePublished">
+          2017-03-29
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS中的禁用横屏方案</h1>
+    <section class="post-content">
+      <p>项目需求是全局的禁用横屏，但是特殊页面需要实现横屏播放视频</p>
+<h3 id="禁用横屏但特殊界面横屏"><a href="#禁用横屏但特殊界面横屏" class="headerlink" title="禁用横屏但特殊界面横屏"></a>禁用横屏但特殊界面横屏</h3><p>在 <code>APPDelegate.h</code> 文件中增加属性：是否支持横屏</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/***  是否允许横屏的标记 */</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>,<span class="keyword">assign</span>)<span class="built_in">BOOL</span> allowRotation;</div></pre></td></tr></table></figure>
+<p>在 <code>APPDelegate.m</code> 文件中增加方法，控制全部不支持横屏</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">UIInterfaceOrientationMask</span>)application:(<span class="built_in">UIApplication</span> *)application supportedInterfaceOrientationsForWindow:(<span class="built_in">UIWindow</span> *)window &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.allowRotation) &#123;</div><div class="line">        <span class="keyword">return</span>  <span class="built_in">UIInterfaceOrientationMaskAllButUpsideDown</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">UIInterfaceOrientationMaskPortrait</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样在其他界面想要横屏的时候，我们只要控制 <code>allowRotation</code> 这个属性就可以控制其他界面进行横屏了。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//需在上面#import "AppDelegate.h"</span></div><div class="line">AppDelegate *appDelegate = (AppDelegate *)[[<span class="built_in">UIApplication</span> sharedApplication] delegate];</div><div class="line">appDelegate.allowRotation = <span class="literal">YES</span>;</div><div class="line"><span class="comment">//不让横屏的时候 appDelegate.allowRotation = NO;即可</span></div></pre></td></tr></table></figure>
+<h3 id="播放界面横屏"><a href="#播放界面横屏" class="headerlink" title="播放界面横屏"></a>播放界面横屏</h3><p>所以这里可以使用 UIWindow 的通知，就可以解决</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(begainFullScreen) name:<span class="built_in">UIWindowDidBecomeVisibleNotification</span> object:<span class="literal">nil</span>];<span class="comment">//进入全屏</span></div><div class="line">[[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(endFullScreen) name:<span class="built_in">UIWindowDidBecomeHiddenNotification</span> object:<span class="literal">nil</span>];<span class="comment">//退出全屏</span></div></pre></td></tr></table></figure>
+<p>在退出全屏时，增加逻辑让其强制编程竖屏，这样当全屏播放的时候，点击 down(“完成”) 时，就会自动变成竖屏了。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 进入全屏</span></div><div class="line">-(<span class="keyword">void</span>)begainFullScreen</div><div class="line">&#123;</div><div class="line">    AppDelegate *appDelegate = (AppDelegate *)[[<span class="built_in">UIApplication</span> sharedApplication] delegate];</div><div class="line">    appDelegate.allowRotation = <span class="literal">YES</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 退出全屏</span></div><div class="line">-(<span class="keyword">void</span>)endFullScreen</div><div class="line">&#123;</div><div class="line">    AppDelegate *appDelegate = (AppDelegate *)[[<span class="built_in">UIApplication</span> sharedApplication] delegate];</div><div class="line">    appDelegate.allowRotation = <span class="literal">NO</span>;</div><div class="line">    </div><div class="line">    <span class="comment">//强制归正：</span></div><div class="line">    <span class="keyword">if</span> ([[<span class="built_in">UIDevice</span> currentDevice] respondsToSelector:<span class="keyword">@selector</span>(setOrientation:)]) &#123;</div><div class="line">        SEL selector = <span class="built_in">NSSelectorFromString</span>(<span class="string">@"setOrientation:"</span>);</div><div class="line">        <span class="built_in">NSInvocation</span> *invocation = [<span class="built_in">NSInvocation</span> invocationWithMethodSignature:[<span class="built_in">UIDevice</span> instanceMethodSignatureForSelector:selector]];</div><div class="line">        [invocation setSelector:selector];</div><div class="line">        [invocation setTarget:[<span class="built_in">UIDevice</span> currentDevice]];</div><div class="line">        <span class="keyword">int</span> val =<span class="built_in">UIInterfaceOrientationPortrait</span>;</div><div class="line">        [invocation setArgument:&amp;val atIndex:<span class="number">2</span>];</div><div class="line">        [invocation invoke];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2017/03/29/iOS中的禁用横屏方案/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2017/03/29/iOS中的禁用横屏方案/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2017/03/29/iOS中的禁用横屏方案/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/03/29/iOS适配/">
+        ← iOS适配
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/03/10/15270596708587/">
+        NSLog性能问题笔记 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

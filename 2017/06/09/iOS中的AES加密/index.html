@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS中的AES加密 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-06-09T01:21:26.000Z" itemprop="datePublished">
+          2017-06-09
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS中的AES加密</h1>
+    <section class="post-content">
+      <p>项目中需要对敏感信息加密，前后端选定使用AES加密方式加密，直接上代码</p>
+<p>创建一个NSData的Category</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonCryptor.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//(key和iv向量这里是16位的) 这里是CBC加密模式，安全性更高</span></div><div class="line"></div><div class="line">- (<span class="built_in">NSData</span> *)AES128EncryptWithKey:(<span class="built_in">NSString</span> *)key gIv:(<span class="built_in">NSString</span> *)Iv&#123;<span class="comment">//加密</span></div><div class="line">    <span class="keyword">char</span> keyPtr[kCCKeySizeAES128+<span class="number">1</span>];</div><div class="line">    bzero(keyPtr, <span class="keyword">sizeof</span>(keyPtr));</div><div class="line">    [key getCString:keyPtr maxLength:<span class="keyword">sizeof</span>(keyPtr) encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">char</span> ivPtr[kCCKeySizeAES128+<span class="number">1</span>];</div><div class="line">    memset(ivPtr, <span class="number">0</span>, <span class="keyword">sizeof</span>(ivPtr));</div><div class="line">    [Iv getCString:ivPtr maxLength:<span class="keyword">sizeof</span>(ivPtr) encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSUInteger</span> dataLength = [<span class="keyword">self</span> length];</div><div class="line">    size_t bufferSize = dataLength + kCCBlockSizeAES128;</div><div class="line">    <span class="keyword">void</span> *buffer = malloc(bufferSize);</div><div class="line">    size_t numBytesEncrypted = <span class="number">0</span>;</div><div class="line">    CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt,</div><div class="line">                                          kCCAlgorithmAES128,</div><div class="line">                                          kCCOptionPKCS7Padding,</div><div class="line">                                          keyPtr,</div><div class="line">                                          kCCBlockSizeAES128,</div><div class="line">                                          ivPtr,</div><div class="line">                                          [<span class="keyword">self</span> bytes],</div><div class="line">                                          dataLength,</div><div class="line">                                          buffer,</div><div class="line">                                          bufferSize,</div><div class="line">                                          &amp;numBytesEncrypted);</div><div class="line">    <span class="keyword">if</span> (cryptStatus == kCCSuccess) &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSData</span> dataWithBytesNoCopy:buffer length:numBytesEncrypted];</div><div class="line">    &#125;</div><div class="line">    free(buffer);</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//AES解密</span></div><div class="line">- (<span class="built_in">NSData</span> *)AES128DecryptWithKey:(<span class="built_in">NSString</span> *)key gIv:(<span class="built_in">NSString</span> *)Iv &#123;</div><div class="line">    <span class="keyword">char</span> keyPtr[kCCKeySizeAES128+<span class="number">1</span>];</div><div class="line">    bzero(keyPtr, <span class="keyword">sizeof</span>(keyPtr));</div><div class="line">    [key getCString:keyPtr maxLength:<span class="keyword">sizeof</span>(keyPtr) encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">char</span> ivPtr[kCCKeySizeAES128+<span class="number">1</span>];</div><div class="line">    memset(ivPtr, <span class="number">0</span>, <span class="keyword">sizeof</span>(ivPtr));</div><div class="line">    [Iv getCString:ivPtr maxLength:<span class="keyword">sizeof</span>(ivPtr) encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSUInteger</span> dataLength = [<span class="keyword">self</span> length];</div><div class="line">    size_t bufferSize = dataLength + kCCBlockSizeAES128;</div><div class="line">    <span class="keyword">void</span> *buffer = malloc(bufferSize);</div><div class="line">    size_t numBytesDecrypted = <span class="number">0</span>;</div><div class="line">    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,</div><div class="line">                                          kCCAlgorithmAES128,</div><div class="line">                                          kCCOptionPKCS7Padding,</div><div class="line">                                          keyPtr,</div><div class="line">                                          kCCBlockSizeAES128,</div><div class="line">                                          ivPtr,</div><div class="line">                                          [<span class="keyword">self</span> bytes],</div><div class="line">                                          dataLength,</div><div class="line">                                          buffer,</div><div class="line">                                          bufferSize,</div><div class="line">                                          &amp;numBytesDecrypted);</div><div class="line">    <span class="keyword">if</span> (cryptStatus == kCCSuccess) &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSData</span> dataWithBytesNoCopy:buffer length:numBytesDecrypted];</div><div class="line">    &#125;</div><div class="line">    free(buffer);</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里可以在创建一个加密工具类，实现以下加密和解密代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将string转成带密码的data</span></div><div class="line">+(<span class="built_in">NSString</span>*)neu_encryptAESData:(<span class="built_in">NSString</span>*)string</div><div class="line">&#123;</div><div class="line">    <span class="comment">//将nsstring转化为nsdata</span></div><div class="line">    <span class="built_in">NSData</span> *data = [string dataUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    <span class="comment">//使用密码对nsdata进行加密</span></div><div class="line">    <span class="built_in">NSData</span> *encryptedData = [data AES128EncryptWithKey:KEY gIv:Iv];</div><div class="line">    <span class="comment">//返回进行base64进行转码的加密字符串</span></div><div class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> encodeBase64Data:encryptedData];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+(<span class="built_in">NSString</span>*)neu_decryptAESData:(<span class="built_in">NSString</span> *)string</div><div class="line">&#123;</div><div class="line">    <span class="comment">//base64解密</span></div><div class="line">    <span class="built_in">NSData</span> *decodeBase64Data=[NEUBase64 decodeString:string];</div><div class="line">    <span class="comment">//使用密码对data进行解密</span></div><div class="line">    <span class="built_in">NSData</span> *decryData = [decodeBase64Data AES128DecryptWithKey:KEY gIv:Iv];</div><div class="line">    <span class="comment">//将解了密码的nsdata转化为nsstring</span></div><div class="line">    <span class="built_in">NSString</span> *str = [[<span class="built_in">NSString</span> alloc] initWithData:decryData encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    <span class="keyword">return</span> str;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用的时候直接调用这两个方法就行了</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2017/06/09/iOS中的AES加密/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2017/06/09/iOS中的AES加密/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2017/06/09/iOS中的AES加密/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/09/09/flask笔记1/">
+        ← flask笔记1
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2017/06/07/15210096824918/">
+        MVC MVVM →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

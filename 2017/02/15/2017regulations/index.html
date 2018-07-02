@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>hexo部署和更新博客 | LittleStingWhen</title>
+  <title>hexo部署和更新博客 | shenyiSS</title>
   <meta name="description" content="小叮当" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -13,7 +13,7 @@
   <link rel="stylesheet" type="text/css" href="/css/screen.css" />
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
 
-  <meta name="generator" content="LittleStingWhen">
+  <meta name="generator" content="shenyiSS">
 
   
   
@@ -29,7 +29,7 @@
     <div class="vertical">
         <div class="site-head-content inner">
              <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
-            <h1 class="blog-title">LittleStingWhen</h1>
+            <h1 class="blog-title">shenyiSS</h1>
             <h2 class="blog-description">小叮当</h2>
         </div>
     </div>
@@ -60,40 +60,42 @@
 </li>
 <li><p>修改主题方法是两步，先下载主题然后放到博客中的themes文件夹（专门用来存放主题）下，再修改主题的配置文件_config.yml中相关参数，启用themes文件夹下新增的主题,例如</p>
 <p> a. 下载Next主题:</p>
-<pre><code>进入 hexoBlog/themes 文件夹中，打开Git Bash面板，输入：
-`git clone https://github.com/iissnan/hexo-theme-next themes/next`
+<p> 进入 hexoBlog/themes 文件夹中，打开Git Bash面板，输入：</p>
+<pre><code>`git clone https://github.com/iissnan/hexo-theme-next themes/next`
 把主题包克隆到themes文件夹中即可。
 </code></pre><p> b. 启用主题:</p>
-<pre><code>与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开themes下的主题配置文件_config.yml， 找到 theme 字段，并将其值更改为 next（注意冒号后面要留一个 空格）。
-</code></pre><p> c. 验证主题:</p>
-<pre><code>清除并重新生成hexo静态文件，启动本地服务器，然后通过http://localhost:4000 预览博客：
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">		 hexo clean         #清除静态文件</div><div class="line">		 hexo g          #重新生成静态文件</div><div class="line">		 hexo s         #启动服务器</div><div class="line">		``` </div><div class="line">		</div><div class="line">5. 每次更新博客</div><div class="line">	* 书写博客md文件</div><div class="line">	* 进入XXX.github.io文件夹，`hexo server`或者`hexo s`运行服务器，预览</div><div class="line">	* 审核无误后运行`hexo clean &amp;&amp; hexo g &amp;&amp; hexo d`(清除文件，生成新文件，部署到github服务器) </div><div class="line"></div><div class="line">6. 更改地址到自定义域名，登录github，进入到博客仓库，点击setting，选择custom domain ，输入要自定义的域名，更改保存，每次`hexo d`之后都要进行这个操作</div><div class="line"></div><div class="line"></div><div class="line">#### 小问题</div><div class="line"></div><div class="line">1. 当`brew list`的时候能看到nvm，但是在终端输入nvm却提示`command not found:nvm`，这个时候在终端输入</div></pre></td></tr></table></figure>
-</code></pre></li>
+<p> 与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开themes下的主题配置文件_config.yml， 找到 theme 字段，并将其值更改为 next（注意冒号后面要留一个 空格）。</p>
+<p> c. 验证主题:</p>
+<p> 清除并重新生成hexo静态文件，启动本地服务器，然后通过<a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a> 预览博客：</p>
+</li>
 </ol>
-<p>export NVM_DIR=~/.nvm<br>source $(brew –prefix nvm)/nvm.sh<br>```</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">		hexo clean         #清除静态文件</div><div class="line">		hexo g          #重新生成静态文件</div><div class="line">		hexo s         #启动服务器</div><div class="line">	``` </div><div class="line">		</div><div class="line">		</div><div class="line">5. 每次更新博客</div><div class="line">	* 书写博客md文件</div><div class="line">	* 进入XXX.github.io文件夹，`hexo server`或者`hexo s`运行服务器，预览</div><div class="line">	* 审核无误后运行`hexo clean &amp;&amp; hexo g &amp;&amp; hexo d`(清除文件，生成新文件，部署到github服务器) </div><div class="line"></div><div class="line">6. 更改地址到自定义域名，登录github，进入到博客仓库，点击setting，选择custom domain ，输入要自定义的域名，更改保存，每次`hexo d`之后都要进行这个操作</div><div class="line"></div><div class="line"></div><div class="line">#### 小问题</div><div class="line"></div><div class="line">1. 当`brew list`的时候能看到nvm，但是在终端输入nvm却提示`command not found:nvm`，这个时候在终端输入</div></pre></td></tr></table></figure>
+</code></pre><p>export NVM_DIR=~/.nvm<br>source $(brew –prefix nvm)/nvm.sh<br>```</p>
 <p>就能解决问题了，当然这是解决当前窗口，要是想不每次都输入就把这两句话加到 ~/.bash_profile , zsh的话是 ~/.zshrc（我用的就是zsh）</p>
 <ol>
-<li>由于电脑上有两个版本的nvm，hexo是在v4.7.2下的，但是默认的是v9.7.1,这时候只要输入<code>nvm list</code>查看一下版本信息，然后<code>nvm use v4.7.2</code>，就能在当前终端窗口使用指定版本</li>
+<li><p>由于电脑上有两个版本的nvm，hexo是在v4.7.2下的，但是默认的是v9.7.1,这时候只要输入<code>nvm list</code>查看一下版本信息，然后<code>nvm use v4.7.2</code>，就能在当前终端窗口使用指定版本</p>
+</li>
+<li><p>配置阿里云域名</p>
+</li>
 </ol>
 
     </section>
     <footer class="post-footer">
       <section class="author">
-    <h4>LittleSW</h4>
+    <h4>shenyiSS</h4>
     <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
 </section>
       <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?url=http://littlesw.top/2017/02/15/2017regulations/"
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2017/02/15/2017regulations/"
        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
         <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://littlesw.top/2017/02/15/2017regulations/"
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2017/02/15/2017regulations/"
        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
         <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://littlesw.top/2017/02/15/2017regulations/"
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2017/02/15/2017regulations/"
        onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
         <span class="hidden">Google+</span>
     </a>
@@ -125,7 +127,7 @@
 <footer class="site-footer">
   
   <div class="inner">
-     <section class="copyright">All content copyright <a href="/">LittleStingWhen</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
      <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
   </div>
 </footer>
