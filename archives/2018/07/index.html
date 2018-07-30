@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>Archives: 2018 | shenyiSS</title>
+  <title>Archives: 2018/7 | shenyiSS</title>
   <meta name="description" content="小叮当" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -40,8 +40,8 @@
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
-      <time datetime="2018-01-15T13:48:56.000Z" itemprop="datePublished">
-          2018-01-15
+      <time datetime="2018-07-30T06:20:10.000Z" itemprop="datePublished">
+          2018-07-30
       </time>
     
     
@@ -50,63 +50,29 @@
     
     
 </span>
-      <h2 class="post-title"><a href="/2018/01/15/15196245688317/">布局、显示、约束</a></h2>
+      <h2 class="post-title"><a href="/2018/07/30/2018-07-30/">iOS中数据本地化总结</a></h2>
     </header>
     <section class="post-excerpt">
       <p>
       
-        Run loop一个应用的Main Run loop负责处理所有的用户输入事件并触发相应的响应。用户的交互都会被加入一个事件队列中，Application Object会从队列中取出事件并将它们分发到应用中的其他对象（Core objects）上，对应相应的代码处理逻辑，这些代码调用返回后，控制流回到主Run loop上，然后开始update cycle，Update cycle负责布局并且重新渲染view。
-Update cycle-
+        沙盒iOS中每个人应用都有自己的沙盒，和其他应用的文件系统相隔离，每个应用只能访问自己沙盒里的文件
+
+Document：存储运行时生成的一些需要长久保存的数据，用户自己创建的数据，不能被App重现的文档和数据（会被iTunes和iCloud备份）
+Library：
+Preferences：存储设置应用的一些功能设置信息，该目录由系统自动管理，不用自己在这个目录下创建文件，通常用来存储一些基本的应用配置信息，调用的NSUserDefaul
       
       </p>
       
       <p>
-          <a href="/2018/01/15/15196245688317/" class="excerpt-link">Read More...</a>
-      </p>
-      
-    </section>
-  </article>
-  
-  <article class="post">
-    <header class="post-header">
-      <span class="post-meta">
-      <time datetime="2018-01-06T09:51:56.000Z" itemprop="datePublished">
-          2018-01-06
-      </time>
-    
-    
-    | 
-    <a href='/tags/Personal/'>Personal</a>
-    
-    
-</span>
-      <h2 class="post-title"><a href="/2018/01/06/15271485313612/">git学习笔记</a></h2>
-    </header>
-    <section class="post-excerpt">
-      <p>
-      
-        
-集中式版本控制：CVS，SVN，分布式：git
-git的优势是在强大的分支管理
-git add 添加工作区的文件到暂存区
-git commit 把暂存区的所有更改提交更改到仓库
-git status 是用来查看当前仓库的状态
-git diff 是用来查看工作区和暂存区的比较，git diff --cached是比较暂存区和分支的比较
-git log 是用来查看提交日志的，可以添加--pretty=oneline可以简化日志显示
-git
-      
-      </p>
-      
-      <p>
-          <a href="/2018/01/06/15271485313612/" class="excerpt-link">Read More...</a>
+          <a href="/2018/07/30/2018-07-30/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
   </article>
   
   <nav class="pagination" role="pagination">
-    <a class="newer-posts" href="/archives/2018/">← Newer Posts</a>
-    <span class="page-number">Page 2 of 2</span>
+    
+    <span class="page-number">Page 1 of 1</span>
     
   </nav>
 </main>

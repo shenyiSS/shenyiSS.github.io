@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS中数据本地化总结 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-07-30T06:20:10.000Z" itemprop="datePublished">
+          2018-07-30
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS中数据本地化总结</h1>
+    <section class="post-content">
+      <h2 id="沙盒"><a href="#沙盒" class="headerlink" title="沙盒"></a>沙盒</h2><p>iOS中每个人应用都有自己的沙盒，和其他应用的文件系统相隔离，每个应用只能访问自己沙盒里的文件</p>
+<ul>
+<li><strong>Document</strong>：存储运行时生成的一些需要长久保存的数据，用户自己创建的数据，不能被App重现的文档和数据（会被iTunes和iCloud备份）</li>
+<li><strong>Library</strong>：<ul>
+<li>Preferences：存储设置应用的一些功能设置信息，该目录由系统自动管理，不用自己在这个目录下创建文件，通常用来存储一些基本的应用配置信息，调用的NSUserDefault或者CFPreferences的API会在这个目录下自动创建文件（会被iTunes和iCloud备份）</li>
+<li>Caches：存储网络请求的缓存数据信息，iOS5之后系统可能会自动删除改目录下文件（程序运行的时候不会删除）</li>
+</ul>
+</li>
+<li><strong>tmp</strong>：保存应用运行时产生的一些临时数据，系统空间不够的时候会<em>自动清除</em>该目录的数据，不需要手动清除</li>
+</ul>
+<blockquote>
+<p><a href="https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW1" target="_blank" rel="external">文件系统官方文档</a><br>关于备份到iCloud的问题，可以手动实现方法自定义上传目录</p>
+</blockquote>
+<h3 id="真机获取沙盒文件"><a href="#真机获取沙盒文件" class="headerlink" title="真机获取沙盒文件"></a>真机获取沙盒文件</h3><ol>
+<li>设备连接电脑，打开XCode，Window-&gt;Devices and Simulators</li>
+<li>找到当前手机，找到需要导出的App，选中，然后点击下方的设置图标，选择Download Container</li>
+<li>选择目录，保存，会看到一个xcappdata文件，右键选显示包内容，就搞定了</li>
+</ol>
+<h2 id="本地化方案"><a href="#本地化方案" class="headerlink" title="本地化方案"></a>本地化方案</h2><h3 id="Plist"><a href="#Plist" class="headerlink" title="Plist"></a>Plist</h3><p>对于最常见的info.plist文件就是iOS应用的配置文件，实际上就是个Dictionary。可以存储Array，Dictionary，String，Boolean，Date，Data，Number。通常用于存储设置或者不经常修改的数据（性能方面有限制），不适合存储大量数据</p>
+<h3 id="NSUserDefault"><a href="#NSUserDefault" class="headerlink" title="NSUserDefault"></a>NSUserDefault</h3><p>会生成bundle名字的plist文件（com.xxx.xxx.plist），存储在沙盒中/Library/Preferences路径下，由于是plist文件，实际上就是操作plist文件</p>
+<blockquote>
+<p>NSUserDefault是线程安全，返回的value都是不可变对象</p>
+</blockquote>
+<h3 id="文件读写存储"><a href="#文件读写存储" class="headerlink" title="文件读写存储"></a>文件读写存储</h3><p>通过NSFileManager单例来处理，路径可以自定义设置，可以存储大量数据，对数据格式没有限制，关于读写线程安全问题，可以用<code>pthread_rwlock</code>，或者自己实现一个锁（读的时候不允许写，但是允许读，写的时候不允许读也不允许写）</p>
+<h3 id="解归档存储"><a href="#解归档存储" class="headerlink" title="解归档存储"></a>解归档存储</h3><p><code>NSKeyedArchiver</code>把自定义模型归档，保存成文件，自定义模型要遵守NSCoding协议，不适合存储大量数据</p>
+<h3 id="数据库存储"><a href="#数据库存储" class="headerlink" title="数据库存储"></a>数据库存储</h3><p>一般移动端就是SQLite</p>
+<ul>
+<li>FMDB：基于SQLite的一个开源库，需要手写SQLite语句</li>
+<li>CoreData：苹果基于SQLite的数据存储方案，可以用操作对象的方式操作数据，支出iCloud</li>
+</ul>
+<h2 id="Apple-Developer开发文档"><a href="#Apple-Developer开发文档" class="headerlink" title="Apple Developer开发文档"></a>Apple Developer开发文档</h2><p>官方文档才是最好的文档，网上有好多博客都是错的<br><a href="https://developer.apple.com/library/archive/navigation/index.html" target="_blank" rel="external">官方文档查询</a></p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/07/30/2018-07-30/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/07/30/2018-07-30/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/07/30/2018-07-30/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/06/25/15297583699972/">
+        黑苹果踩坑过程 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>
