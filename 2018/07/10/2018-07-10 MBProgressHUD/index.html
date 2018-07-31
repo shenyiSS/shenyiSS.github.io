@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>MBProgressHUD窥探 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-07-10T01:13:42.000Z" itemprop="datePublished">
+          2018-07-10
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">MBProgressHUD窥探</h1>
+    <section class="post-content">
+      <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>在UIKit有个类<code>UIProgressHUD</code>，就是系统自带的HUD类，属于私有API，实际项目中我还是选择了<code>MBProgressHUD</code>这个库（版本1.1.0）</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><h4 id="创建View"><a href="#创建View" class="headerlink" title="创建View"></a>创建View</h4><ol>
+<li>首先<code>MBProgressHUD</code>这个类是继承自<code>UIView</code>，</li>
+<li>然后在上面添加一个<code>MBBackgroundView</code>类的<code>backgroundView</code>，</li>
+<li>再在<code>backgroundView</code>添加一个MBBackgroundView<code>的</code>bezelView</li>
+<li>再在<code>bezelView</code>上面分别添加<code>(UILabel)label</code>，<code>(UILabel)detailsLabel</code>，<code>(MBProgressHUDRoundedButton)button</code>，<code>(UIView)topSpacer</code>，<code>(UIView)bottomSpacer</code></li>
+</ol>
+<h4 id="设置indicator"><a href="#设置indicator" class="headerlink" title="设置indicator"></a>设置indicator</h4><p>根据MBProgressHUDMode去设置</p>
+<ol>
+<li><code>MBProgressHUDModeIndeterminate</code>，使用<code>UIActivityIndicatorView</code>创建一个添加到<code>bezelView</code>上</li>
+<li><code>MBProgressHUDModeDeterminateHorizontalBar</code>，创建一个<code>MBBarProgressView</code>添加到<code>bezelView</code>上</li>
+<li><code>MBProgressHUDModeDeterminate</code>和<code>MBProgressHUDModeAnnularDeterminate</code>，创建一个<code>MBRoundProgressView</code>添加到<code>bezelView</code>上</li>
+<li><code>MBProgressHUDModeCustomView</code>，直接把<code>self.customView</code>添加到<code>bezelView</code>上</li>
+<li><code>MBProgressHUDModeText</code>就是什么都不添加</li>
+</ol>
+<h4 id="注册设备方向变换通知"><a href="#注册设备方向变换通知" class="headerlink" title="注册设备方向变换通知"></a>注册设备方向变换通知</h4><h3 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h3><h4 id="UIInterpolatingMotionEffect"><a href="#UIInterpolatingMotionEffect" class="headerlink" title="UIInterpolatingMotionEffect"></a>UIInterpolatingMotionEffect</h4><p>在bezelView上添加了UIInterpolatingMotionEffect运动视差效果（就类似移动手机壁纸会动的效果）</p>
+<h4 id="translatesAutoresizingMaskIntoConstraints"><a href="#translatesAutoresizingMaskIntoConstraints" class="headerlink" title="translatesAutoresizingMaskIntoConstraints"></a>translatesAutoresizingMaskIntoConstraints</h4><p>用代码创建的View，这个默认设置为YES，就会把AutoresizingMask（frame，bounds，center）等转换成constraint。在使用autolayout布局的时候，手动给视图添加的约束和自动转换的约束肯定会冲突，所以要把translatesAutoresizingMaskIntoConstraints设置为NO<br>用IB创建的View，无论使用frame还是autolayout布局，都不用管</p>
+<h4 id="Content-Hugging和Content-Compression-Resistance"><a href="#Content-Hugging和Content-Compression-Resistance" class="headerlink" title="Content Hugging和Content Compression Resistance"></a>Content Hugging和Content Compression Resistance</h4><p>类似约束优先级，两个分别代表拉伸和压缩的优先级，也是0~1000</p>
+<ul>
+<li>Content Hugging Priorty:表示一个控件被<strong>拉伸</strong>的优先级，优先级越高，越不容易被拉伸，默认是250</li>
+<li>Content Compression Resistance Priority：表示一个控件被<strong>压缩</strong>的优先级，优先级越高，越不容易被压缩，默认是750</li>
+</ul>
+<h4 id="NSTimer"><a href="#NSTimer" class="headerlink" title="NSTimer"></a>NSTimer</h4><p>里面使用的计时器都是NSTimer，添加到RunLoop的时候使用的都是CommonModes<br><code>[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];</code></p>
+<h4 id="主线程"><a href="#主线程" class="headerlink" title="主线程"></a>主线程</h4><p>由于HUD是操作UI，所以要使用主线程，里面使用了<code>#define MBMainThreadAssert() NSAssert([NSThread isMainThread], @&quot;MBProgressHUD needs to be accessed on the main thread.&quot;);</code></p>
+<h4 id="能否操作"><a href="#能否操作" class="headerlink" title="能否操作"></a>能否操作</h4><p>默认在hud显示时间内，后面的背景都不能操作的，如果想操作只需设置<code>hud.userInteractionEnabled = NO</code>即可</p>
+<h4 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h4><p>整体使用了Autolayout来布局，其中还用了VFL</p>
+<h4 id="dimBackground"><a href="#dimBackground" class="headerlink" title="dimBackground"></a>dimBackground</h4><p>设置一下<code>backgroundView</code>的属性就能达到背景有颜色</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;</div><div class="line">hud.backgroundView.color = [<span class="built_in">UIColor</span> colorWithWhite:<span class="number">0.</span>f alpha:<span class="number">0.1</span>f];</div></pre></td></tr></table></figure>
+<p>在之前版本里面有一个<code>self.dimBackground</code>属性，实现中间颜色较浅，四周边缘颜色较深效果，使用的是<code>CGGradient</code>，直接上代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect &#123;</div><div class="line">	</div><div class="line">	<span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</div><div class="line">	<span class="built_in">UIGraphicsPushContext</span>(context);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="keyword">self</span>.dimBackground) &#123;</div><div class="line">		<span class="comment">//Gradient colours</span></div><div class="line">		size_t gradLocationsNum = <span class="number">2</span>;</div><div class="line">		<span class="built_in">CGFloat</span> gradLocations[<span class="number">2</span>] = &#123;<span class="number">0.0</span>f, <span class="number">1.0</span>f&#125;;</div><div class="line">		<span class="built_in">CGFloat</span> gradColors[<span class="number">8</span>] = &#123;<span class="number">0.0</span>f,<span class="number">0.0</span>f,<span class="number">0.0</span>f,<span class="number">0.0</span>f,<span class="number">0.0</span>f,<span class="number">0.0</span>f,<span class="number">0.0</span>f,<span class="number">0.75</span>f&#125;; </div><div class="line">		<span class="built_in">CGColorSpaceRef</span> colorSpace = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</div><div class="line">		<span class="built_in">CGGradientRef</span> gradient = <span class="built_in">CGGradientCreateWithColorComponents</span>(colorSpace, gradColors, gradLocations, gradLocationsNum);</div><div class="line">		<span class="built_in">CGColorSpaceRelease</span>(colorSpace);</div><div class="line">		<span class="comment">//Gradient center</span></div><div class="line">		<span class="built_in">CGPoint</span> gradCenter= <span class="built_in">CGPointMake</span>(<span class="keyword">self</span>.bounds.size.width/<span class="number">2</span>, <span class="keyword">self</span>.bounds.size.height/<span class="number">2</span>);</div><div class="line">		<span class="comment">//Gradient radius</span></div><div class="line">		<span class="keyword">float</span> gradRadius = MIN(<span class="keyword">self</span>.bounds.size.width , <span class="keyword">self</span>.bounds.size.height) ;</div><div class="line">		<span class="comment">//Gradient draw</span></div><div class="line">		<span class="built_in">CGContextDrawRadialGradient</span> (context, gradient, gradCenter,</div><div class="line">									 <span class="number">0</span>, gradCenter, gradRadius,</div><div class="line">									 kCGGradientDrawsAfterEndLocation);</div><div class="line">		<span class="built_in">CGGradientRelease</span>(gradient);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// Set background rect color</span></div><div class="line">	<span class="keyword">if</span> (<span class="keyword">self</span>.color) &#123;</div><div class="line">		<span class="built_in">CGContextSetFillColorWithColor</span>(context, <span class="keyword">self</span>.color.CGColor);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">CGContextSetGrayFillColor</span>(context, <span class="number">0.0</span>f, <span class="keyword">self</span>.opacity);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	</div><div class="line">	<span class="comment">// Center HUD</span></div><div class="line">	<span class="built_in">CGRect</span> allRect = <span class="keyword">self</span>.bounds;</div><div class="line">	<span class="comment">// Draw rounded HUD backgroud rect</span></div><div class="line">	<span class="built_in">CGRect</span> boxRect = <span class="built_in">CGRectMake</span>(round((allRect.size.width - size.width) / <span class="number">2</span>) + <span class="keyword">self</span>.xOffset,</div><div class="line">								round((allRect.size.height - size.height) / <span class="number">2</span>) + <span class="keyword">self</span>.yOffset, size.width, size.height);</div><div class="line">	<span class="keyword">float</span> radius = <span class="keyword">self</span>.cornerRadius;</div><div class="line">	<span class="built_in">CGContextBeginPath</span>(context);</div><div class="line">	<span class="built_in">CGContextMoveToPoint</span>(context, <span class="built_in">CGRectGetMinX</span>(boxRect) + radius, <span class="built_in">CGRectGetMinY</span>(boxRect));</div><div class="line">	<span class="built_in">CGContextAddArc</span>(context, <span class="built_in">CGRectGetMaxX</span>(boxRect) - radius, <span class="built_in">CGRectGetMinY</span>(boxRect) + radius, radius, <span class="number">3</span> * (<span class="keyword">float</span>)M_PI / <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>);</div><div class="line">	<span class="built_in">CGContextAddArc</span>(context, <span class="built_in">CGRectGetMaxX</span>(boxRect) - radius, <span class="built_in">CGRectGetMaxY</span>(boxRect) - radius, radius, <span class="number">0</span>, (<span class="keyword">float</span>)M_PI / <span class="number">2</span>, <span class="number">0</span>);</div><div class="line">	<span class="built_in">CGContextAddArc</span>(context, <span class="built_in">CGRectGetMinX</span>(boxRect) + radius, <span class="built_in">CGRectGetMaxY</span>(boxRect) - radius, radius, (<span class="keyword">float</span>)M_PI / <span class="number">2</span>, (<span class="keyword">float</span>)M_PI, <span class="number">0</span>);</div><div class="line">	<span class="built_in">CGContextAddArc</span>(context, <span class="built_in">CGRectGetMinX</span>(boxRect) + radius, <span class="built_in">CGRectGetMinY</span>(boxRect) + radius, radius, (<span class="keyword">float</span>)M_PI, <span class="number">3</span> * (<span class="keyword">float</span>)M_PI / <span class="number">2</span>, <span class="number">0</span>);</div><div class="line">	<span class="built_in">CGContextClosePath</span>(context);</div><div class="line">	<span class="built_in">CGContextFillPath</span>(context);</div><div class="line"></div><div class="line">	<span class="built_in">UIGraphicsPopContext</span>();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><h4 id="和网络请求的结合"><a href="#和网络请求的结合" class="headerlink" title="和网络请求的结合"></a>和网络请求的结合</h4><p>由于HUD一般都是在程序进行耗时操作，比如说网络请求时出现，所有就需要一种实现方法来集成到网络库里面，我的做法是：</p>
+<ol>
+<li>把每个网络请求封装成一个对象，这个对象都有一个HUD属性</li>
+<li>这个HUD属性可以设置成功效果和文字，失败效果和文字</li>
+<li>在网络请求成功和失败的时候分别调用显示成功HUD和失败HUD的方法就能显示了</li>
+</ol>
+<h4 id="how和why"><a href="#how和why" class="headerlink" title="how和why"></a>how和why</h4><p>要搞清楚整个库，就要先清除图层等级，有哪些图形控件，整体比较简单的一个库，一个HUD就是一个对象，管理好每个HUD对象的状态，正确显示布局和动画，就OK了</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/07/10/2018-07-10 MBProgressHUD/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/07/10/2018-07-10 MBProgressHUD/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/07/10/2018-07-10 MBProgressHUD/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2018/07/30/2018-07-30/">
+        ← iOS中数据本地化总结
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/06/25/15297583699972/">
+        黑苹果踩坑过程 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>
