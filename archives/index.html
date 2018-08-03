@@ -40,6 +40,36 @@
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
+      <time datetime="2018-08-03T02:15:10.000Z" itemprop="datePublished">
+          2018-08-03
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+      <h2 class="post-title"><a href="/2018/08/03/2018-08-03/">多个.a中.o冲突问题</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        项目中由于要对接多个三方设备，他们提供的SDK往往是.a的文件，在导入多个静态库的时候有可能因为不同.a文件链接相同名称的.o的文件，就会发生编译不通过，报错duplicate symbols for architecture arm64，在XCode的错误提示信息里面就能看到是哪个库的哪个文件出错，我的项目中是两个SDK中都有GCDAsyncUdpSocket.o，所以编译报错
+我决定把其中一个SDK的GCDAsyncUdpSocke
+      
+      </p>
+      
+      <p>
+          <a href="/2018/08/03/2018-08-03/" class="excerpt-link">Read More...</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
       <time datetime="2018-07-30T06:20:10.000Z" itemprop="datePublished">
           2018-07-30
       </time>
@@ -354,36 +384,6 @@ nvm install v4.7.2 安装指定版本node
       
       <p>
           <a href="/2018/03/12/15205239182889/" class="excerpt-link">Read More...</a>
-      </p>
-      
-    </section>
-  </article>
-  
-  <article class="post">
-    <header class="post-header">
-      <span class="post-meta">
-      <time datetime="2018-03-01T11:33:29.000Z" itemprop="datePublished">
-          2018-03-01
-      </time>
-    
-    
-    | 
-    <a href='/tags/iOS/'>iOS</a>
-    
-    
-</span>
-      <h2 class="post-title"><a href="/2018/03/01/NSData和十六进制字符串的转换/">NSData和十六进制字符串的转换</a></h2>
-    </header>
-    <section class="post-excerpt">
-      <p>
-      
-        在完成需求的时候，遇到NSData和十六进制字符串转换的问题，搜索之后的答案如下：
-1234567NSString* newStr = [[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding];// If the data is null-terminated, you should instead use -stringWithUTF8String: t
-      
-      </p>
-      
-      <p>
-          <a href="/2018/03/01/NSData和十六进制字符串的转换/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
