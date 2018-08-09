@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>动态库静态库笔记 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-08-09T08:34:04.000Z" itemprop="datePublished">
+          2018-08-09
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">动态库静态库笔记</h1>
+    <section class="post-content">
+      <h3 id="动态库"><a href="#动态库" class="headerlink" title="动态库"></a>动态库</h3><p>多个App使用共用一个动态库的_TEXT区，各自维护各自的_DATA区</p>
+<h4 id="和静态库的区别"><a href="#和静态库的区别" class="headerlink" title="和静态库的区别"></a>和静态库的区别</h4><ol>
+<li>静态库可以看做是一个有特定功能的代码块，会直接被编译进App的可执行文件中，而动态库不会，只有动态库真正被用到的时候，才会被加载到内存中和链接。使用动态库能减少可执行文件的大小，执行时占用内存的大小，缩短app的启动时间</li>
+<li>静态库的后缀名是<code>.a</code>（本质就是<code>.o</code>的集合包），动态库的后缀名是<code>.dylib</code>和<code>.framework</code>，系统库都属于动态库。</li>
+<li>在static linker链接app的时候，静态库会被完整的加载到app的mach-o文件，是mach-o文件的一部分。而动态库作为app的依赖库时，只是被mach-o文件添加了一个引用，在运行时加载动态库，则mach-o文件不会添加动态库的引用</li>
+<li>动态库可以被多个app的进程共享，内存中只有一份，静态库就会有可能存在多份，所以动态库可以减少使用内存的大小</li>
+</ol>
+<p>动态库缩短启动时间的原理：动态库是在使用时加载，而不是一定是启动时加载</p>
+<h4 id="创建动态库"><a href="#创建动态库" class="headerlink" title="创建动态库"></a>创建动态库</h4><p><code>.framework</code>（framework）和<code>.dylib</code>（shared library），framework本质上是由shared library加上头文件和其他资源文件打包得来的</p>
+<p>创建framework的时候区分处理器架构，所以如果需要在模拟器和真机上都想使用的话，需要把不同架构下的文件合并</p>
+<h4 id="使用动态库"><a href="#使用动态库" class="headerlink" title="使用动态库"></a>使用动态库</h4><ul>
+<li>作为依赖库，会在启动时记载动态库</li>
+<li>使用<code>dlopen()</code>代码在运行时加载动态库（mac开发允许，iOS下不允许）</li>
+</ul>
+<p>关于动态库的加载，有个optional和required（默认）两个选项，官方是这么说的</p>
+<blockquote>
+<p>Libraries and frameworks are designated as Required by default, but you can change this designation to Optional. Required libraries must be present on the host computer for the product to load. Optional libraries do not have to be present for the product to load. A Required framework will always be loaded into memory, but an Optional framework will be loaded only if needed. The initial load of the application will be faster if a large library that is never needed is designated as Optional.</p>
+</blockquote>
+<p>可见optional是在被用到的时候才会被加载，required是启动时被加载。</p>
+<h3 id="cocoapods中的动态库和静态库"><a href="#cocoapods中的动态库和静态库" class="headerlink" title="cocoapods中的动态库和静态库"></a>cocoapods中的动态库和静态库</h3><p>iOS8之前不能使用动态库，只能使用静态库</p>
+<p>podfile中使用<code>ues_framework!</code>来使pod可以使用dynamic frameworks方式生成.framework文件<br>不适用<code>ues_framework!</code>的话，是以static libraries方式生成.a文件</p>
+<ol>
+<li>oc导入oc项目，一般不用framework，用不用都行</li>
+<li>swift导入swift项目，需要<code>ues_framework!</code></li>
+<li>swift导入oc，用不用<code>ues_framework!</code>都行，只是一个导入的路径问题d’d’d</li>
+</ol>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/08/09/2018-08-09/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/08/09/2018-08-09/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/08/09/2018-08-09/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/08/03/2018-08-03/">
+        多个.a中.o冲突问题 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>

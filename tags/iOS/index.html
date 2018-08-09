@@ -40,6 +40,39 @@
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
+      <time datetime="2018-08-09T08:34:04.000Z" itemprop="datePublished">
+          2018-08-09
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+      <h2 class="post-title"><a href="/2018/08/09/2018-08-09/">动态库静态库笔记</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        动态库多个App使用共用一个动态库的_TEXT区，各自维护各自的_DATA区
+和静态库的区别
+静态库可以看做是一个有特定功能的代码块，会直接被编译进App的可执行文件中，而动态库不会，只有动态库真正被用到的时候，才会被加载到内存中和链接。使用动态库能减少可执行文件的大小，执行时占用内存的大小，缩短app的启动时间
+静态库的后缀名是.a（本质就是.o的集合包），动态库的后缀名是.dylib和.framework，系统库都属于动态库。
+在s
+      
+      </p>
+      
+      <p>
+          <a href="/2018/08/09/2018-08-09/" class="excerpt-link">Read More...</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
       <time datetime="2018-08-03T02:15:10.000Z" itemprop="datePublished">
           2018-08-03
       </time>
@@ -327,35 +360,6 @@ Update cycle-
       
       <p>
           <a href="/2017/06/09/iOS中的AES加密/" class="excerpt-link">Read More...</a>
-      </p>
-      
-    </section>
-  </article>
-  
-  <article class="post">
-    <header class="post-header">
-      <span class="post-meta">
-      <time datetime="2017-06-07T14:58:56.000Z" itemprop="datePublished">
-          2017-06-07
-      </time>
-    
-    
-    | 
-    <a href='/tags/iOS/'>iOS</a>
-    
-    
-</span>
-      <h2 class="post-title"><a href="/2017/06/07/15210096824918/">MVC MVVM</a></h2>
-    </header>
-    <section class="post-excerpt">
-      <p>
-      
-        MVC（Model-View-Controller）用户操作View，传递给Controller处理，Controller更新Model，Model被更改了通知Controller，Controller去更新View。其实往往发现自己的代码就是View和Controller是一体的，就是整个ViewController，用户操作由ViewController接收，ViewController去更新Model，Model改变了然后告诉Vi
-      
-      </p>
-      
-      <p>
-          <a href="/2017/06/07/15210096824918/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
