@@ -50,21 +50,18 @@
     
     
 </span>
-      <h2 class="post-title"><a href="/2017/03/29/iOS中的禁用横屏方案/">iOS中的禁用横屏方案</a></h2>
+      <h2 class="post-title"><a href="/2017/03/29/iOS适配/">iOS适配</a></h2>
     </header>
     <section class="post-excerpt">
       <p>
       
-        项目需求是全局的禁用横屏，但是特殊页面需要实现横屏播放视频
-禁用横屏但特殊界面横屏在 APPDelegate.h 文件中增加属性：是否支持横屏
-12/***  是否允许横屏的标记 */@property (nonatomic,assign)BOOL allowRotation;
-在 APPDelegate.m 文件中增加方法，控制全部不支持横屏
-123456- (UIInterfaceOrientationMask)applicatio
+        当前我们需要适配的iPhone机型有3.5寸（iPhone4s 320, 480）、4寸（iPhone5 320, 568）、4.7寸（iPhone6 375, 667）、5.5寸（iPhone6P 414, 736）四种机型。
+而一般我习惯在实际的项目开发中，使用Masonry来搭建UI界面，虽然在Masonry中我们能很方便的设置各个控件之间的约束，但是对于类似4s机型和6s Plus机型的很大的高度差，有时候仅仅靠一次性成型的约束
       
       </p>
       
       <p>
-          <a href="/2017/03/29/iOS中的禁用横屏方案/" class="excerpt-link">Read More...</a>
+          <a href="/2017/03/29/iOS适配/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
@@ -83,18 +80,21 @@
     
     
 </span>
-      <h2 class="post-title"><a href="/2017/03/29/iOS适配/">iOS适配</a></h2>
+      <h2 class="post-title"><a href="/2017/03/29/iOS中的禁用横屏方案/">iOS中的禁用横屏方案</a></h2>
     </header>
     <section class="post-excerpt">
       <p>
       
-        当前我们需要适配的iPhone机型有3.5寸（iPhone4s 320, 480）、4寸（iPhone5 320, 568）、4.7寸（iPhone6 375, 667）、5.5寸（iPhone6P 414, 736）四种机型。
-而一般我习惯在实际的项目开发中，使用Masonry来搭建UI界面，虽然在Masonry中我们能很方便的设置各个控件之间的约束，但是对于类似4s机型和6s Plus机型的很大的高度差，有时候仅仅靠一次性成型的约束
+        项目需求是全局的禁用横屏，但是特殊页面需要实现横屏播放视频
+禁用横屏但特殊界面横屏在 APPDelegate.h 文件中增加属性：是否支持横屏
+12/***  是否允许横屏的标记 */@property (nonatomic,assign)BOOL allowRotation;
+在 APPDelegate.m 文件中增加方法，控制全部不支持横屏
+123456- (UIInterfaceOrientationMask)applicatio
       
       </p>
       
       <p>
-          <a href="/2017/03/29/iOS适配/" class="excerpt-link">Read More...</a>
+          <a href="/2017/03/29/iOS中的禁用横屏方案/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
