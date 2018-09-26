@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS12适配 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2018-09-13T09:51:59.000Z" itemprop="datePublished">
+          2018-09-13
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS12适配</h1>
+    <section class="post-content">
+      <p>由于之前安装过beta版本测试过，和iOS12的改动并不大，一直没有着手iOS12的适配，另一个原因是没有测试机给我折腾iOS12。。。<br>随着GM版本的发布，Xcode升到了10.0，iOS升到了iOS12，正式开始适配</p>
+<h3 id="lstdc-6-0-9-被删除"><a href="#lstdc-6-0-9-被删除" class="headerlink" title="lstdc++.6.0.9 被删除"></a>lstdc++.6.0.9 被删除</h3><p>下载好之后用Xcode10打开项目编译，直接报Error<code>ld: library not found for -lstdc++.6.0.9
+clang: error: linker command failed with exit code 1 (use -v to see invocation)</code></p>
+<p><strong>libstdc++.6.0.9</strong>被移除了，解决办法就是去Xcode以前版本<code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/</code>路径下去拷贝libstdc++.6.0.9这个文件，然后复制到Xcode10的相同路径下就OK了</p>
+<h3 id="屏幕尺寸适配"><a href="#屏幕尺寸适配" class="headerlink" title="屏幕尺寸适配"></a>屏幕尺寸适配</h3><p>凡是带刘海的设备判断宏<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 是否iPhoneX,iPhoneXS,iPhoneXS Max,是否iPhoneXR</span></div><div class="line"><span class="meta">#define iPhoneXSeries ([UIScreen instancesRespondToSelector:@selector(currentMode)] ?\</span></div><div class="line">(\</div><div class="line"><span class="built_in">CGSizeEqualToSize</span>(<span class="built_in">CGSizeMake</span>(<span class="number">375</span>, <span class="number">812</span>),[<span class="built_in">UIScreen</span> mainScreen].bounds.size)\</div><div class="line">||\</div><div class="line"><span class="built_in">CGSizeEqualToSize</span>(<span class="built_in">CGSizeMake</span>(<span class="number">414</span>, <span class="number">896</span>),[<span class="built_in">UIScreen</span> mainScreen].bounds.size)\</div><div class="line">)\</div><div class="line">:\</div><div class="line"><span class="literal">NO</span>)</div></pre></td></tr></table></figure></p>
+<h3 id="图片资源适配"><a href="#图片资源适配" class="headerlink" title="图片资源适配"></a>图片资源适配</h3><p>新增加启动图尺寸：<br>XR：828px <em> 1792px<br>XS Max:1242px </em> 2688px</p>
+<p>Xcode10.0打开项目，在LaunchImage里面看不到XS Max和XR的启动图，这时候只要选中LaunchImage勾选右边<strong>iOS 8.0 and Later</strong>选项就能看到了</p>
+<h3 id="解决模拟器不能打开项目问题"><a href="#解决模拟器不能打开项目问题" class="headerlink" title="解决模拟器不能打开项目问题"></a>解决模拟器不能打开项目问题</h3><p>由于引入了部分三方库不支持模拟器，但是部分逻辑嵌套太严重了。所以找到一个折中的办法，来解决这个问题。</p>
+<p>在 PCH 文件里添加</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#if TARGET_IPHONE_SIMULATOR</span></div><div class="line">    <span class="comment">//模拟器</span></div><div class="line">    <span class="meta">#define SIMULATOR_TEST</span></div><div class="line"><span class="meta">#else</span></div><div class="line">    <span class="comment">//  真机</span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
+<p>在仅需要真机执行的代码段里，使用下面的方式包含进去</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#ifndef SIMULATOR_TEST</span></div><div class="line"><span class="comment">//真机代码</span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
+<p>在编译的时候真机才会编译其中代码</p>
+<h3 id="libstdc-6-0-9与模拟器的冲突"><a href="#libstdc-6-0-9与模拟器的冲突" class="headerlink" title="libstdc++6.0.9与模拟器的冲突"></a>libstdc++6.0.9与模拟器的冲突</h3><p>在处理完真机代码之后，可以用模拟器跑起来项目，但是在 dyld 加载动态库的时候报错<code>/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator</code>。</p>
+<p>我先是按照真机的方式拷贝 Xcode9 里面模拟器的 libstdc++ 到 Xcode10 的模拟器路径下，发现还是报错，查证后发现是 iOS12 已经删除了这个库，拷贝了也没用。所以解决办法就是要么更新 SDK，升级到 libc++，要么就是删除对 libstdc++ 的引用。这里没办法只能选择后者。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/09/13/iOS12适配2018-09-13/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/09/13/iOS12适配2018-09-13/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/09/13/iOS12适配2018-09-13/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/09/01/2018-08-31/">
+        利用python实现日志输出 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>
