@@ -63,9 +63,22 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)<
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#if TARGET_IPHONE_SIMULATOR</span></div><div class="line">    <span class="comment">//模拟器</span></div><div class="line">    <span class="meta">#define SIMULATOR_TEST</span></div><div class="line"><span class="meta">#else</span></div><div class="line">    <span class="comment">//  真机</span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
 <p>在仅需要真机执行的代码段里，使用下面的方式包含进去</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#ifndef SIMULATOR_TEST</span></div><div class="line"><span class="comment">//真机代码</span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
-<p>在编译的时候真机才会编译其中代码</p>
+<p>在真机编译的时候才会编译其中代码</p>
+<blockquote>
+<ol>
+<li><code>#if !TARGET_IPHONE_SIMULATOR</code>这种写法并不行，TARGET_IPHONE_SIMULATOR 是 Int32 类型，swift 中预编译使用<code>!</code>好像不可以转成 bool 类型。但是 OC 中可以。</li>
+<li>打开 <strong>TargetConditionals.h</strong>，可以找到这个宏，是 TARGET_IPHONE_SIMULATOR 而不是 TARGET_OS_SIMULATOR（被弃用）<br>#define TARGET_OS_IPHONE            @CONFIG_IPHONE@<br>#define TARGET_IPHONE_SIMULATOR     @CONFIG_IPHONE_SIMULATOR@ </li>
+</ol>
+</blockquote>
 <h3 id="libstdc-6-0-9与模拟器的冲突"><a href="#libstdc-6-0-9与模拟器的冲突" class="headerlink" title="libstdc++6.0.9与模拟器的冲突"></a>libstdc++6.0.9与模拟器的冲突</h3><p>在处理完真机代码之后，可以用模拟器跑起来项目，但是在 dyld 加载动态库的时候报错<code>/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator</code>。</p>
-<p>我先是按照真机的方式拷贝 Xcode9 里面模拟器的 libstdc++ 到 Xcode10 的模拟器路径下，发现还是报错，查证后发现是 iOS12 已经删除了这个库，拷贝了也没用。所以解决办法就是要么更新 SDK，升级到 libc++，要么就是删除对 libstdc++ 的引用。这里没办法只能选择后者。</p>
+<p>我先是按照真机的方式拷贝 Xcode9 里面模拟器的 libstdc++ 到 Xcode10 的模拟器路径下，发现还是报错，查证后发现是 iOS12 已经删除了这个库，拷贝了也没用。所以解决办法就是要么更新 SDK，升级到 libc++，要么就是删除对 libstdc++ 的引用。这里没办法只能选择后者。iOS11 模拟器是可以运行的</p>
+<blockquote>
+<p>181009更新：找到 iOS12 模拟器的运行办法了，参照<a href="https://awhisper.github.io/2018/06/08/libstdc-inxcode10ios12/" target="_blank" rel="external">味精大佬的博客</a>，只需要两部可以了：</p>
+<ol>
+<li>将 <a href="http://ouz34cilp.bkt.clouddn.com/libstdc++_sim.zip" target="_blank" rel="external">libstdc++_sim.zip</a> 解压，放到目录 <code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/lib/</code></li>
+<li>将 <a href="http://ouz34cilp.bkt.clouddn.com/libstdc++.dylib_sim.zip" target="_blank" rel="external">libstdc++.dylib_sim.zip</a> 解压，放到目录 <code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/</code></li>
+</ol>
+</blockquote>
 
     </section>
     <footer class="post-footer">
