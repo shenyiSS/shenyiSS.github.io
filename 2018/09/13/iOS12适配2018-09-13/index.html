@@ -81,6 +81,11 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)<
 </blockquote>
 <h3 id="Xcode10-0-闪退"><a href="#Xcode10-0-闪退" class="headerlink" title="Xcode10.0 闪退"></a>Xcode10.0 闪退</h3><p>在导入头文件的时候，输入 <code>#import &quot;&quot;</code> 就会闪退</p>
 <p>解决办法：Xcode –&gt; File –&gt; Workspace Settings –&gt; Build System –&gt; Legacy Build System</p>
+<h3 id="获取-WIFI-信息"><a href="#获取-WIFI-信息" class="headerlink" title="获取 WIFI 信息"></a>获取 WIFI 信息</h3><p>项目中需要获取当前 WIFI 的 SSID，在 iOS12 中获取的话需要设置权限。</p>
+<ol>
+<li>苹果开发者网站上管理 appID 的地方勾选 <strong>Access WIFI Information</strong></li>
+<li>Xcode 中 Capabilities 中，激活 <strong>Access WIFI Information</strong> 项</li>
+</ol>
 
     </section>
     <footer class="post-footer">
