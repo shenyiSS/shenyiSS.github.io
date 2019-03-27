@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>OC代码规范总结 | shenyiSS</title>
+  <meta name="description" content="小叮当" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="shenyiSS">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//blog.ghost.org/content/images/2013/Nov/cover.png)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://ojx6xusf6.bkt.clouddn.com/QQ20170921-0.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">shenyiSS</h1>
+            <h2 class="blog-description">小叮当</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2019-03-27T02:06:58.000Z" itemprop="datePublished">
+          2019-03-27
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+    <h1 class="post-title">OC代码规范总结</h1>
+    <section class="post-content">
+      <h2 id="参考规范"><a href="#参考规范" class="headerlink" title="参考规范"></a>参考规范</h2><p>OC：<a href="https://github.com/raywenderlich/objective-c-style-guide" target="_blank" rel="external">https://github.com/raywenderlich/objective-c-style-guide</a><br>Swift：<a href="https://github.com/raywenderlich/swift-style-guide" target="_blank" rel="external">https://github.com/raywenderlich/swift-style-guide</a></p>
+<p>这篇只是涉及到 OC 相关的规范</p>
+<h3 id="阅读笔记"><a href="#阅读笔记" class="headerlink" title="阅读笔记"></a>阅读笔记</h3><ol>
+<li><p>使用 if 的时候 if 那一行的括号不用换行，else 的时候不用换行</p>
+</li>
+<li><p>注释最好是用来说明为什么，而不是说明是什么。是 why 而不是 what</p>
+</li>
+<li><p>NSString 要用 copy 来修饰，因为 NSString 可以被 NSMutableString 赋值，用 strong 的话，NSString 有可能被改变</p>
+</li>
+<li><p>点语法使用来取属性的，其他情况应该使用方括号。比如说 <code>[self.array count]</code>，不是<code>[[self array] count]</code>，也不是<code>self.array.count</code></p>
+</li>
+<li><p>可以用字面量尽量用字面量 <code>@[@&quot;&quot;, @&quot;&quot;]</code>， <code>@{@&quot;&quot;: @&quot;&quot;}</code>， <code>@YES</code>，<code>@100</code>，这样写起来更简洁</p>
+</li>
+<li><p>常量定义尽量使用 static const 而不是 #define</p>
+</li>
+<li><p>当 switch case 使用的是自定义类型时，不需要 default 分支</p>
+</li>
+<li><p>不要直接比较一个值与 YES 是否相等，可以写成 <code>if ([object boolValue])</code> 这种形式，而不是<code>if (object == YES)</code></p>
+</li>
+<li><p>OC 中都要使用 YES 或者 NO，只有在 CoreFoundation，C 或者 C++ 中才会使用 true 和 false</p>
+</li>
+<li><p>BOOL 类型的属性命名可以再形容词之前加is，来指定 getter，比如说 isHidden，可以参考这种写法：<code>@property (assign, getter=isEditable) BOOL editable;</code></p>
+</li>
+<li><p>if 条件分支一定要有大括号，而且要换行，哪怕只有一行语句，都不能一行写完</p>
+</li>
+<li><p>三目运算符的应用场景应该是在赋值的时候，决定赋值哪个，当条件不是一个值的时候，最好用圆括号括起来，例如<code>result = (value != 0) ? x : y;</code></p>
+</li>
+<li><p>init 方法里面要使用<code>instancetype</code>而不是<code>id</code>，构造方法中返回的类型也应该用<code>instancetype</code></p>
+</li>
+<li><p>对于 CGRect 类型取其 x，y，width，height 等值的时候，不要直接用点语法取出，应该用 <code>CGRectGetMinX(frame)</code>， <code>CGRectGetWidth(frame)</code>这种取出值，因为这些函数可以再计算结果之前隐式标准化这些 CGRect</p>
+</li>
+<li><p>在方法里，可以使用多个 return的情况，那就不要使用 if 嵌套结构</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)someMethod &#123;</div><div class="line">  if (![someOther boolValue]) &#123;</div><div class="line">	return;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  //Do something important</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>当一个方法通过引用返回 NSError 类型参数的时候，应该选取返回值判断，而不是 NSError 那个变量</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSError *error;</div><div class="line">if (![self trySomethingWithError:&amp;error]) &#123;</div><div class="line">  // Handle Error</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>单例</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">+ (instancetype)sharedInstance &#123;</div><div class="line">  static id sharedInstance = nil;</div><div class="line"></div><div class="line">  static dispatch_once_t onceToken;</div><div class="line">  dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">    sharedInstance = [[self alloc] init];</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  return sharedInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>shenyiSS</h4>
+    <p>永远吃不饱，永远不认输，头很硬，不文艺，不浪漫.</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2019/03/27/OC 代码规范 2019-03-27/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2019/03/27/OC 代码规范 2019-03-27/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2019/03/27/OC 代码规范 2019-03-27/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2018/09/13/iOS12适配2018-09-13/">
+        iOS12适配 →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h1>
+
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">shenyiSS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>
