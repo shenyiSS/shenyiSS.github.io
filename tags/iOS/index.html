@@ -76,6 +76,36 @@ NS
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
+      <time datetime="2018-11-01T08:55:42.000Z" itemprop="datePublished">
+          2018-11-01
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS/'>iOS</a>
+    
+    
+</span>
+      <h2 class="post-title"><a href="/2018/11/01/swift 的 Any Anyobject optional 2018-11-01/">Swift 中的 Any Anyobject optional</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        Any 和 Anyobject因为编译的时候不会对 id 类型的变量进行类型检查，可以表示任意实例变量。在 swift 中相对应的是 Anyobject，为了对 cocoa 框架中很多方法做出兼容。因为 id 可以指向 nil，所以一个 API 的返回值为 id 的时候，对应的 swift 里面返回的是 Anyobject?。
+Any 可以指向 class，struct 和 enum 等任意类型，Anyobject 只能指向 class
+      
+      </p>
+      
+      <p>
+          <a href="/2018/11/01/swift 的 Any Anyobject optional 2018-11-01/" class="excerpt-link">Read More...</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
       <time datetime="2018-09-13T09:51:59.000Z" itemprop="datePublished">
           2018-09-13
       </time>
@@ -326,48 +356,6 @@ Preferences：存储设置应用的一些功能设置信息，该目录由系统
       
       <p>
           <a href="/2018/03/01/NSData和十六进制字符串的转换/" class="excerpt-link">Read More...</a>
-      </p>
-      
-    </section>
-  </article>
-  
-  <article class="post">
-    <header class="post-header">
-      <span class="post-meta">
-      <time datetime="2018-02-08T11:28:56.000Z" itemprop="datePublished">
-          2018-02-08
-      </time>
-    
-    
-    | 
-    <a href='/tags/iOS/'>iOS</a>
-    
-    
-</span>
-      <h2 class="post-title"><a href="/2018/02/08/15180589189419/">iOS原生语音识别</a></h2>
-    </header>
-    <section class="post-excerpt">
-      <p>
-      
-        
-需要iOS10以上系统，需要在plist文件添加使用语音和麦克风的权限描述
-AR喵的实现
-
-用户按住按钮-&gt;说话，录音，生成文件保存(还是保存识别结果)?
-用户第二次按住-&gt;说话，录音，生成文件保存(还是保存识别结果)？-&gt;比对两次说话录音识别结果-&gt;一致则通过
-用户发起语音指令-&gt;按住说话-&gt; 识别-&gt;匹配-&gt;是否执行？
-
-
-使用的是#import 
-
-识别本地语音文件
-
-123456
-      
-      </p>
-      
-      <p>
-          <a href="/2018/02/08/15180589189419/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>

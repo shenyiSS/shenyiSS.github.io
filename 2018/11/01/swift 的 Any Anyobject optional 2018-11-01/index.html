@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>Unity 打包安卓 | shenyiSS</title>
+  <title>Swift 中的 Any Anyobject optional | shenyiSS</title>
   <meta name="description" content="小叮当" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -39,29 +39,34 @@
 <main class="content" role="main">
   <article class="post">
     <span class="post-meta">
-      <time datetime="2018-04-09T13:13:29.000Z" itemprop="datePublished">
-          2018-04-09
+      <time datetime="2018-11-01T08:55:42.000Z" itemprop="datePublished">
+          2018-11-01
       </time>
     
     
     | 
-    <a href='/tags/Unity/'>Unity</a>
+    <a href='/tags/iOS/'>iOS</a>
     
     
 </span>
-    <h1 class="post-title">Unity 打包安卓</h1>
+    <h1 class="post-title">Swift 中的 Any Anyobject optional</h1>
     <section class="post-content">
-      <p>整体实现思路就是先在Unity里面实现安卓的逻辑，保证方法名称的一致性，先把Untiy中导出安卓项目，然后再在安卓项目下打包整理逻辑</p>
+      <h3 id="Any-和-Anyobject"><a href="#Any-和-Anyobject" class="headerlink" title="Any 和 Anyobject"></a>Any 和 Anyobject</h3><p>因为编译的时候不会对 id 类型的变量进行类型检查，可以表示任意实例变量。在 swift 中相对应的是 Anyobject，为了对 cocoa 框架中很多方法做出兼容。<br>因为 id 可以指向 nil，所以一个 API 的返回值为 id 的时候，对应的 swift 里面返回的是 Anyobject?。</p>
+<p>Any 可以指向 class，struct 和 enum 等任意类型，Anyobject 只能指向 class 类型</p>
+<h3 id="optional"><a href="#optional" class="headerlink" title="optional"></a>optional</h3><p>swift 中 nil 也是一种类型，所以一个 string 类型的变量不能赋值为 nil。<br>但是对于一个 string? 类型（跟 string 完全是两个类型），既可以接收一个字符串，也可以赋值为 nil。</p>
 <ol>
-<li>build的时候切换成安卓，在<em>play setting</em>里面的<em>Package Name</em>这里设置BundleID,最上面的Product Name设置项目名称</li>
-<li>Target API Level 选择22，Minimum API Level选择16</li>
-<li>在Build Setting弹出框里面选择Export Project，点击Export</li>
-<li>导出项目成功之后，用AS打开项目，File-&gt;New-&gt;import Module，选择安卓工程师给的lib项目，点击Finish导入成功</li>
-<li>打开Project（ProductName）-&gt;java-&gt;com.ehoo.pet(PackageName)-&gt;UnityPlayerActivity.java，<code>@Override protected void onCreate(Bundle savedInstanceState)</code>方法里面写初始化代码，并在此java文件里面添加需要安卓原生实现的逻辑，提供给外部接口</li>
-<li><p>在Unity的脚本中调用安卓方法示例</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#if UNITY_ANDROID</div><div class="line">        AndroidJavaClass javaClass = new AndroidJavaClass (&quot;com.unity3d.player.UnityPlayer&quot;);</div><div class="line">        AndroidJavaObject javaObj = javaClass.GetStatic&lt;AndroidJavaObject&gt; (&quot;currentActivity&quot;);</div><div class="line">        //这里就是调用的getTodaySportStepArray，返回值是string类型</div><div class="line">        javaObj.Call&lt;string&gt;(&quot;getTodaySportStepArray&quot;);</div><div class="line">#endif</div></pre></td></tr></table></figure>
+<li><p>使用 ！对一个可选类型强制解包是不安全的，需要保证在取值的时候不会为 nil，如果为 nil 则程序直接崩溃。想强制解包的话，需要在之前判断是否为 nil。</p>
+</li>
+<li><p>if let 解包的就类似加了判空的强制解包，能保证安全。</p>
+</li>
+<li><p>可选调用链的话，在其中一个值为 nil 时，整个都为 nil，例如 person?.name?.uppercaseString</p>
+</li>
+<li><p>空合运算符，let newName = name ?? “no name”，意思就是 name 有值的话，就赋值为 name!，否则为 “no name”。</p>
+</li>
+<li><p>隐式可选型，var name: String! = “name”，作用就是在这个类没有被初始化的时候，他是没有值的，当初始化之后，可以确保他是有值的，在使用的时候同上面的可选型一样，需要判空。</p>
 </li>
 </ol>
+<p>一般解包的时候用 if let 或者 guard let 就好了</p>
 
     </section>
     <footer class="post-footer">
@@ -71,15 +76,15 @@
 </section>
       <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/04/09/Unity 打包安卓/"
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://shenyiss.com/2018/11/01/swift 的 Any Anyobject optional 2018-11-01/"
        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
         <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/04/09/Unity 打包安卓/"
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shenyiss.com/2018/11/01/swift 的 Any Anyobject optional 2018-11-01/"
        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
         <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/04/09/Unity 打包安卓/"
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shenyiss.com/2018/11/01/swift 的 Any Anyobject optional 2018-11-01/"
        onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
         <span class="hidden">Google+</span>
     </a>
@@ -88,14 +93,14 @@
   </article>
   <nav class="pagination" role="pagination">
     
-    <a class="newer-posts" href="/2018/05/22/RN小笔记1/">
-        ← RN小笔记1
+    <a class="newer-posts" href="/2019/03/27/OC 代码规范 2019-03-27/">
+        ← OC代码规范总结
     </a>
     
     <span class="page-number">•</span>
     
-    <a class="older-posts" href="/2018/04/03/15221337362830/">
-         →
+    <a class="older-posts" href="/2018/09/13/iOS12适配2018-09-13/">
+        iOS12适配 →
     </a>
     
 </nav>
