@@ -40,6 +40,43 @@
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
+      <time datetime="2018-01-06T09:51:56.000Z" itemprop="datePublished">
+          2018-01-06
+      </time>
+    
+    
+    | 
+    <a href='/tags/Personal/'>Personal</a>
+    
+    
+</span>
+      <h2 class="post-title"><a href="/2018/01/06/15271485313612/">git学习笔记</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        
+集中式版本控制：CVS，SVN，分布式：git
+git的优势是在强大的分支管理
+git add 添加工作区的文件到暂存区
+git commit 把暂存区的所有更改提交更改到仓库
+git status 是用来查看当前仓库的状态
+git diff 是用来查看工作区和暂存区的比较，git diff --cached是比较暂存区和分支的比较
+git log 是用来查看提交日志的，可以添加--pretty=oneline可以简化日志显示
+git
+      
+      </p>
+      
+      <p>
+          <a href="/2018/01/06/15271485313612/" class="excerpt-link">Read More...</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
       <time datetime="2017-10-20T14:58:56.000Z" itemprop="datePublished">
           2017-10-20
       </time>
@@ -183,18 +220,21 @@
     
     
 </span>
-      <h2 class="post-title"><a href="/2017/03/29/iOS适配/">iOS不同屏幕尺寸适配</a></h2>
+      <h2 class="post-title"><a href="/2017/03/29/iOS中的禁用横屏方案/">iOS中的禁用横屏方案</a></h2>
     </header>
     <section class="post-excerpt">
       <p>
       
-        当前我们需要适配的iPhone机型有3.5寸（iPhone4s 320, 480）、4寸（iPhone5 320, 568）、4.7寸（iPhone6 375, 667）、5.5寸（iPhone6P 414, 736）四种机型。
-而一般我习惯在实际的项目开发中，使用Masonry来搭建UI界面，虽然在Masonry中我们能很方便的设置各个控件之间的约束，但是对于类似4s机型和6s Plus机型的很大的高度差，有时候仅仅靠一次性成型的约束
+        项目需求是全局的禁用横屏，但是特殊页面需要实现横屏播放视频
+禁用横屏但特殊界面横屏在 APPDelegate.h 文件中增加属性：是否支持横屏
+12/***  是否允许横屏的标记 */@property (nonatomic,assign)BOOL allowRotation;
+在 APPDelegate.m 文件中增加方法，控制全部不支持横屏
+123456- (UIInterfaceOrientationMask)applicatio
       
       </p>
       
       <p>
-          <a href="/2017/03/29/iOS适配/" class="excerpt-link">Read More...</a>
+          <a href="/2017/03/29/iOS中的禁用横屏方案/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
@@ -213,21 +253,18 @@
     
     
 </span>
-      <h2 class="post-title"><a href="/2017/03/29/iOS中的禁用横屏方案/">iOS中的禁用横屏方案</a></h2>
+      <h2 class="post-title"><a href="/2017/03/29/iOS适配/">iOS不同屏幕尺寸适配</a></h2>
     </header>
     <section class="post-excerpt">
       <p>
       
-        项目需求是全局的禁用横屏，但是特殊页面需要实现横屏播放视频
-禁用横屏但特殊界面横屏在 APPDelegate.h 文件中增加属性：是否支持横屏
-12/***  是否允许横屏的标记 */@property (nonatomic,assign)BOOL allowRotation;
-在 APPDelegate.m 文件中增加方法，控制全部不支持横屏
-123456- (UIInterfaceOrientationMask)applicatio
+        当前我们需要适配的iPhone机型有3.5寸（iPhone4s 320, 480）、4寸（iPhone5 320, 568）、4.7寸（iPhone6 375, 667）、5.5寸（iPhone6P 414, 736）四种机型。
+而一般我习惯在实际的项目开发中，使用Masonry来搭建UI界面，虽然在Masonry中我们能很方便的设置各个控件之间的约束，但是对于类似4s机型和6s Plus机型的很大的高度差，有时候仅仅靠一次性成型的约束
       
       </p>
       
       <p>
-          <a href="/2017/03/29/iOS中的禁用横屏方案/" class="excerpt-link">Read More...</a>
+          <a href="/2017/03/29/iOS适配/" class="excerpt-link">Read More...</a>
       </p>
       
     </section>
@@ -339,47 +376,10 @@
     </section>
   </article>
   
-  <article class="post">
-    <header class="post-header">
-      <span class="post-meta">
-      <time datetime="2016-10-30T09:58:50.000Z" itemprop="datePublished">
-          2016-10-30
-      </time>
-    
-    
-    | 
-    <a href='/tags/iOS/'>iOS</a>
-    
-    
-</span>
-      <h2 class="post-title"><a href="/2016/10/30/iOS中的单例/">iOS中的单例</a></h2>
-    </header>
-    <section class="post-excerpt">
-      <p>
-      
-         单例设计模式从字面意思上来说，就是一个类在系统运行时，只创建一个实例。可以用于需要被多次调用的或者多次使用的资源中。比如我们常见的网络请求类、工具类等等。
- 
-###单例模式的作用它可以保证某个类在运行过程中，只有一个实例，也就是对象实例只占用一份系统内存资源。
-####单例的要点该类有且只有一个实例
-该类必须能自行创建这个实例
-该类必须能够向整个系统提供这个实例
-####单例的优缺点
-优点：提供了唯一实例的受访对象
-因为在系统中只存
-      
-      </p>
-      
-      <p>
-          <a href="/2016/10/30/iOS中的单例/" class="excerpt-link">Read More...</a>
-      </p>
-      
-    </section>
-  </article>
-  
   <nav class="pagination" role="pagination">
     <a class="newer-posts" href="/page/2/">← Newer Posts</a>
-    <span class="page-number">Page 3 of 3</span>
-    
+    <span class="page-number">Page 3 of 4</span>
+    <a class="older-posts" href="/page/4/">Older Posts →</a>
   </nav>
 </main>
 
